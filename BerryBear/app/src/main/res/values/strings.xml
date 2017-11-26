@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">BerryBear</string>
+    <string name="name">Name</string>
+    <string name="edit">Edit</string>
+    <string name="run">Run</string>
+    <string name="options">Options</string>
+    <string name="delete">Delete</string>
+    <string name="save">Save</string>
+</resources>
