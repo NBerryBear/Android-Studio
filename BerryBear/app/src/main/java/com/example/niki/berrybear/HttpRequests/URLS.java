@@ -5,4 +5,7 @@ package com.example.niki.berrybear.HttpRequests;
  */
 
 public class URL {
+    public static String getProgramURl(){
+        return "http://192.168.1.2:8000/programs/";
+    }
 }

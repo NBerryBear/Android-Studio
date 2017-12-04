@@ -17,39 +17,28 @@ public class GET extends AsyncTask<String, Integer, String> {
         URL url = null;
         try {
             url = new URL(urls[0]);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        HttpURLConnection connection = null;
-        try {
+            HttpURLConnection connection = null;
             connection = (HttpURLConnection) url.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             connection.setRequestMethod("GET");
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        }
-        try {
             connection.connect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        BufferedReader rd = null;
-        try {
+
+            BufferedReader rd = null;
             rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String line;
-        try {
+
+            String line;
+
             while ((line = rd.readLine()) != null) {
                 content += line + "\n";
             }
+
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return content;
     }
 

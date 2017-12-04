@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.example.niki.berrybear.Adapters.CustomList;
 import com.example.niki.berrybear.HttpRequests.GET;
-import com.example.niki.berrybear.HttpRequests.URL;
+import com.example.niki.berrybear.HttpRequests.URLS;
 import com.example.niki.berrybear.R;
 import com.example.niki.berrybear.Tabs.ListProgramsActivity;
 
@@ -64,18 +64,15 @@ public class ProgramActivity extends ActionBarActivity {
         try {
             program = new GET().execute(uri).get();
             Log.e("JSON", program);
+            commands = commands(program);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
-        }
-
-        try {
-            commands = commands(program);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         String[] str = new String[]{"5s", "1s", "10s"};
         ListView list = (ListView) findViewById(R.id.commandList);
@@ -147,7 +144,7 @@ public class ProgramActivity extends ActionBarActivity {
     }
 
     String idUri(int id){
-        return URL.getProgramURl() + String.valueOf(id);
+        return URLS.getProgramURl() + String.valueOf(id);
     }
 
     int[] toIntArray(List<Integer> picturs){
@@ -178,4 +175,5 @@ public class ProgramActivity extends ActionBarActivity {
 
             return id;
     }
+
 }

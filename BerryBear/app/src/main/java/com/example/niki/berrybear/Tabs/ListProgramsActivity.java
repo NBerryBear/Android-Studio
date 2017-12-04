@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.niki.berrybear.HttpRequests.GET;
-import com.example.niki.berrybear.HttpRequests.URL;
+import com.example.niki.berrybear.HttpRequests.URLS;
 import com.example.niki.berrybear.MainActivity;
 import com.example.niki.berrybear.Programming.ProgramActivity;
 import com.example.niki.berrybear.R;
@@ -45,7 +45,7 @@ public class ListProgramsActivity extends ListActivity {
         String programs = "";
         GET request = new GET();
         try {
-            programs = request.execute(URL.getProgramURl()).get();
+            programs = request.execute(URLS.getProgramURl()).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
