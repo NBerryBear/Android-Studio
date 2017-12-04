@@ -43,7 +43,7 @@ public class ListProgramsActivity extends ListActivity {
         String programs = "";
         GET request = new GET();
         try {
-             programs = request.execute("http://192.168.1.2:8000/programs/").get();
+             programs = request.execute(url).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
