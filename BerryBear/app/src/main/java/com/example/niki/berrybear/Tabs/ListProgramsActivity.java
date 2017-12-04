@@ -9,11 +9,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.niki.berrybear.HttpRequests.GET;
 import com.example.niki.berrybear.MainActivity;
 import com.example.niki.berrybear.Programming.ProgramActivity;
 import com.example.niki.berrybear.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static com.example.niki.berrybear.R.id.items;
 
@@ -33,15 +40,64 @@ public class ListProgramsActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ListView listview = getListView();
+        String programs = "";
+        GET request = new GET();
+        try {
+             programs = request.execute("http://192.168.1.2:8000/programs/").get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
-        String[] values = {"Program 1", "Program 2", "Program 3", "Program 4",
+        /*JSONObject jsonObj = null;
+        try {
+            jsonObj = new JSONObject(programs);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String name = null;
+        try {
+            name = jsonObj.getString("name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.e("Name", ":" + name);
+        */
+
+
+        List<String> names = new ArrayList<String>();
+        JSONArray jsonarray = null;
+        try {
+            jsonarray = new JSONArray(programs);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < jsonarray.length(); i++) {
+            JSONObject jsonobject = null;
+            try {
+                jsonobject = jsonarray.getJSONObject(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            try {
+                String name = jsonobject.getString("name");
+                names.add(name);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        /*String[] values = {"Program 1", "Program 2", "Program 3", "Program 4",
                 "Program 5", "Program 6", "Program 7", "Program 8",
                 "Program 9", "Program 10", "Program 11", "Program 12",
-                "Program 13", "Program 14"};
+                "Program 13", "Program 14"};*/
 
         this.setListAdapter(new ArrayAdapter<String>(
                 this, R.layout.list_design,
-                items, values));
+                items, names));
 
     }
 
@@ -59,5 +115,7 @@ public class ListProgramsActivity extends ListActivity {
         //TODO: Send program name to database
         //TODO: Get commands from database
     }
+
+
 
 };
