@@ -16,7 +16,7 @@ public class GET extends AsyncTask<String, Integer, String> {
     protected String doInBackground(String... urls) {
         URL url = null;
         try {
-            url = new URL("http://192.168.1.2:8000/programs/");
+            url = new URL(urls[0]);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

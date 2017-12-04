@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.niki.berrybear.HttpRequests.GET;
+import com.example.niki.berrybear.HttpRequests.URL;
 import com.example.niki.berrybear.MainActivity;
 import com.example.niki.berrybear.Programming.ProgramActivity;
 import com.example.niki.berrybear.R;
@@ -29,6 +30,7 @@ public class ListProgramsActivity extends ListActivity {
     private List<String> list;
     private View convertView;
     public String typeMap;
+    public static JSONArray jsonarray = null;
 
     @Override
     public void onBackPressed() {
@@ -43,32 +45,14 @@ public class ListProgramsActivity extends ListActivity {
         String programs = "";
         GET request = new GET();
         try {
-             programs = request.execute(url).get();
+            programs = request.execute(URL.getProgramURl()).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
 
-        /*JSONObject jsonObj = null;
-        try {
-            jsonObj = new JSONObject(programs);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        String name = null;
-        try {
-            name = jsonObj.getString("name");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Log.e("Name", ":" + name);
-        */
-
-
         List<String> names = new ArrayList<String>();
-        JSONArray jsonarray = null;
         try {
             jsonarray = new JSONArray(programs);
         } catch (JSONException e) {
@@ -104,7 +88,6 @@ public class ListProgramsActivity extends ListActivity {
 
     public void onItemClickListener(View v) {
         typeMap=((TextView) v).getText().toString();
-        Toast.makeText(getApplicationContext(), typeMap, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getBaseContext(), ProgramActivity.class);
         intent.putExtra("name", typeMap);
         startActivity(intent);
