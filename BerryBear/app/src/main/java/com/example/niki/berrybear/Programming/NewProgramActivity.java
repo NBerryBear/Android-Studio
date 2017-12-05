@@ -10,6 +10,8 @@ import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,12 +19,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.niki.berrybear.HttpRequests.POST;
+import com.example.niki.berrybear.MainActivity;
 import com.example.niki.berrybear.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,10 +72,13 @@ public class NewProgramActivity extends Activity {
         listSource = (ListView)findViewById(R.id.sourcelist);
         listTarget = (ListView)findViewById(R.id.targetlist);
         EditText name = (EditText) findViewById(R.id.title);
-        name.setText("Program");
+        name.setText(getIntent().getStringExtra("name"));
+        //name.setText(ProgramActivity.jsonobject.getString("name")));
 
         listSource.setAdapter(new ArrayAdapter<String>(
                 this, R.layout.left_new_commands_list_design, textView, comands));
+
+
         /*String[] str = new String[]{"5s", "1s", "10s", "1s"};
         listSource.setAdapter(new CustomList(this, str, imageId));*/
 
@@ -84,8 +96,31 @@ public class NewProgramActivity extends Activity {
                 this, R.layout.right_new_commands_list_design, textView, droppedList);
         listTarget.setAdapter(droppedAdapter);
 
+
         listSource.setOnDragListener(myDragEventListener);
         targetLayout.setOnDragListener(myDragEventListener);
+
+        Button save = (Button) findViewById(R.id.save);
+        final ListView targetlist = (ListView) findViewById(R.id.targetlist);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<String> newCommands = new ArrayList<String>();
+                int itemsCount = targetlist.getChildCount();
+                for (int i = 0; i < itemsCount; i++) {
+                    View view = targetlist.getChildAt(i);
+                    String command = ((TextView) view.findViewById(R.id.textView)).getText().toString();
+                    newCommands.add(command);
+                }
+                String commands = TextUtils.join(" ", newCommands).toLowerCase();
+                Log.e("Command", commands);
+                String name = (((EditText) findViewById(R.id.title)).getText().toString());
+
+                sendJSON(name, commands);
+
+            }
+        });
+
 
     }
 
@@ -180,6 +215,24 @@ public class NewProgramActivity extends Activity {
 
             }
         }
+    }
+
+    void sendJSON(String name, String commands){
+        JSONObject json = new JSONObject();
+        if (name.length() != 0 && commands.length() != 0) {
+            try {
+                json.put("name", name);
+                json.put("commands", commands);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.e("JSOН", json.toString());
+
+            new POST().execute(json.toString());
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            startActivity(intent);
+
+        }else  Toast.makeText(getApplicationContext(), "Fill all " , Toast.LENGTH_SHORT).show();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

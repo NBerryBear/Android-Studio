@@ -2,7 +2,6 @@ package com.example.niki.berrybear.HttpRequests;
 
 import android.os.AsyncTask;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -19,10 +18,10 @@ import java.net.URL;
 public class POST extends AsyncTask<String, Void, JSONObject> {
     String content = "";
 
-    protected JSONObject doInBackground(String... urls) {
+    public JSONObject doInBackground(String... json) {
         URL url = null;
         try {
-            url = new URL(urls[0]);
+            url = new URL(URLS.getProgramURl());
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             //connection.connect();
@@ -32,13 +31,8 @@ public class POST extends AsyncTask<String, Void, JSONObject> {
 
             connection.setDoOutput(true);
 
-            JSONObject json = new JSONObject();
-            json.put("id", 5);
-            json.put("name", "Program");
-            json.put("commands", "left right up up");
-
             OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-            out.write(json.toString());
+            out.write(json[0]);
             out.flush();
             out.close();
 
@@ -60,8 +54,6 @@ public class POST extends AsyncTask<String, Void, JSONObject> {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
             e.printStackTrace();
         }
 

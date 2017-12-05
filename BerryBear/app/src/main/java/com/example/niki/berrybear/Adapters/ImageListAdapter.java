@@ -13,7 +13,7 @@ public class ImageListAdapter extends BaseAdapter {
     private Context mContext;
 
     // Keep all Images in array
-    public int[] mThumbIds = ProgramActivity.imageId;
+    public int[] mThumbIds = ProgramActivity.commands;
 
     // Constructor
     public ImageListAdapter(Context c, int commands_list_design, int command, int[] imageId){

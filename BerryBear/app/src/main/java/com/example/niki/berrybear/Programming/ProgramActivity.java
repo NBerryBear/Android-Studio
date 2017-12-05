@@ -32,20 +32,10 @@ public class ProgramActivity extends ActionBarActivity {
     ListView icons ;
     Adapter adapter ;
     String name = "";
-    public static int[] imageId  = new int[]{
-            R.mipmap.ic_up,
-            R.mipmap.ic_down,
-            R.mipmap.ic_left,
-            R.mipmap.ic_up
+    public static int[] commands;
+    public static String[] arrayOfString;
+    static JSONObject jsonobject = null;
 
-    };
-
-    String[] comands ={
-            "Up",
-            "Down",
-            "Left",
-            "Right"
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,25 +46,22 @@ public class ProgramActivity extends ActionBarActivity {
 
         //TODO: Get information and change title by name
 
-        String program = "";
-        int[] commands = null;
-        int id = get_id(ListProgramsActivity.jsonarray);
-        String uri = idUri(id);
-        Log.e("uri", uri);
-        try {
-            program = new GET().execute(uri).get();
-            Log.e("JSON", program);
-            commands = commands(program);
+        commands = getCommands();
 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        /*commands = new int[]{
+                R.mipmap.ic_up,
+                R.mipmap.ic_down,
+                R.mipmap.ic_left,
+                R.mipmap.ic_up
+
+        };*/
+
+        Log.e("Size", String.valueOf(commands.length));
+        String [] str =  new String[commands.length];
+        for(int i = 0; i < commands.length; i++){
+            str[i] = "1s";
         }
-
-        String[] str = new String[]{"5s", "1s", "10s"};
+        //String[] str = new String[]{"5s", "1s", "10s"};
         ListView list = (ListView) findViewById(R.id.commandList);
         CustomList adapter = new CustomList(this, str, commands);
         list.setAdapter(adapter);
@@ -99,7 +86,9 @@ public class ProgramActivity extends ActionBarActivity {
     }
 
     public void onEditClickListener(MenuItem item) {
-        startActivity(new Intent(this, NewProgramActivity.class));
+        Intent intent = new Intent(getBaseContext(), NewProgramActivity.class);
+        intent.putExtra("name", name);
+        startActivity(intent);
     }
 
     public void onDeleteClickListener(MenuItem item) {
@@ -121,7 +110,7 @@ public class ProgramActivity extends ActionBarActivity {
         }
 
         commands = jsonobj.getString("commands");
-        String[] arrayOfString = commands.split(" ");
+        arrayOfString = commands.split(" ");
         for(String c : arrayOfString ){
             switch (c) {
                 case "left":
@@ -143,6 +132,27 @@ public class ProgramActivity extends ActionBarActivity {
         return toIntArray(picturs);
     }
 
+    int[] getCommands() {
+        String program = "";
+        int[] commands = null;
+        int id = get_id(ListProgramsActivity.jsonarray);
+        String uri = idUri(id);
+        Log.e("uri", uri);
+        try {
+            program = new GET().execute(uri).get();
+            Log.e("JSON", program);
+            commands = commands(program);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return commands;
+    }
+
     String idUri(int id){
         return URLS.getProgramURl() + String.valueOf(id);
     }
@@ -157,7 +167,7 @@ public class ProgramActivity extends ActionBarActivity {
     int get_id(JSONArray json){
         int id = 0;
         for (int i = 0; i < json.length(); i++) {
-            JSONObject jsonobject = null;
+
             try {
                 jsonobject = json.getJSONObject(i);
             } catch (JSONException e) {
@@ -175,5 +185,6 @@ public class ProgramActivity extends ActionBarActivity {
 
             return id;
     }
+
 
 }

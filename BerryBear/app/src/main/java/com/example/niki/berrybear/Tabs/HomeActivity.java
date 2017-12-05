@@ -84,5 +84,19 @@ public class HomeActivity extends Activity {
             }
         });
 
+        /*final EditText display1=(EditText) findViewById(R.id.ip);
+
+
+        Button one= (Button) findViewById(R.id.button);
+        one.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), display1.getText().toString() , Toast.LENGTH_SHORT).show();
+                URLS.url = "http://" + display1.getText().toString() + "/programs/";
+            }
+        });*/
+
+
+
     }
 }
