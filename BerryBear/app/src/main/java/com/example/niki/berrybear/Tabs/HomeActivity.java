@@ -2,7 +2,6 @@ package com.example.niki.berrybear.Tabs;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -12,7 +11,7 @@ import com.example.niki.berrybear.R;
 
 public class HomeActivity extends Activity {
 
-    private boolean doubleBackToExitPressedOnce;
+    /*private boolean doubleBackToExitPressedOnce;
     private Handler mHandler = new Handler();
 
     private final Runnable mRunnable = new Runnable() {
@@ -25,6 +24,7 @@ public class HomeActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //android.os.Process.killProcess(android.os.Process.myPid());
         if (mHandler != null) { mHandler.removeCallbacks(mRunnable); }
     }
 
@@ -39,7 +39,7 @@ public class HomeActivity extends Activity {
         Toast.makeText(this, "Click twice to exit", Toast.LENGTH_SHORT).show();
 
         mHandler.postDelayed(mRunnable, 2000);
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

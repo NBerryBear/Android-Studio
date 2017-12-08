@@ -1,15 +1,11 @@
 package com.example.niki.berrybear.Programming;
 
-import android.app.Activity;
 import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.DragEvent;
@@ -17,16 +13,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.view.View.DragShadowBuilder;
+import android.view.View.OnDragListener;
+import android.view.View.OnLongClickListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.niki.berrybear.HttpRequests.POST;
 import com.example.niki.berrybear.MainActivity;
 import com.example.niki.berrybear.R;
 
@@ -36,14 +30,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.niki.berrybear.R.id.textView;
-
-public class NewProgramActivity extends Activity {
-
-    LinearLayout targetLayout;
-    ListView listSource, listTarget;
-
-    MyDragEventListener myDragEventListener = new MyDragEventListener();
+public class NewProgramActivity extends ActionBarActivity {
 
     String[] comands ={
             "Up",
@@ -52,188 +39,127 @@ public class NewProgramActivity extends Activity {
             "Right"
     };
 
-    public static int[] imageId  = new int[]{
-            R.mipmap.ic_up,
-            R.mipmap.ic_down,
-            R.mipmap.ic_left,
-            R.mipmap.ic_up
+    public static List<Integer> imageId  = new ArrayList<Integer>();
+
+    LinearLayout area1, area2;
+    View view = null;
+    boolean drag = false;
+    Bundle tempBundle;
+    public static boolean openTab2 = false;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        tempBundle = savedInstanceState;
+        setContentView(R.layout.activity_new_program);
+        EditText name = (EditText) findViewById(R.id.title);
+        name.setText(getIntent().getStringExtra("name"));
+
+        imageId.add(R.mipmap.ic_up);
+        imageId.add(R.mipmap.ic_down);
+        imageId.add(R.mipmap.ic_left);
+        imageId.add(R.mipmap.ic_up);
+
+        area1 = (LinearLayout) findViewById(R.id.area1);
+        area2 = (LinearLayout) findViewById(R.id.area2);
+
+
+        TypedArray arrayResources = getResources().obtainTypedArray(
+                R.array.resicon);
+
+        addImg();
+
+        arrayResources.recycle();
+
+        area1.setOnDragListener(myOnDragListener);
+        area2.setOnDragListener(myOnDragListener);
+
+        if(drag){
+            Log.e("Drag", "Drag'");
+        }
+
+    }
+
+    OnLongClickListener myOnLongClickListener = new OnLongClickListener() {
+
+        @Override
+        public boolean onLongClick(View v) {
+            ClipData data = ClipData.newPlainText("", "");
+            DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+            v.startDrag(data, shadowBuilder, v, 0);
+            //v.setVisibility(View.INVISIBLE);
+            return true;
+        }
 
     };
 
-    List<String> droppedList;
-    ArrayAdapter<String> droppedAdapter;
-
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_program);
-        targetLayout = (LinearLayout)findViewById(R.id.targetlayout);
-        listSource = (ListView)findViewById(R.id.sourcelist);
-        listTarget = (ListView)findViewById(R.id.targetlist);
-        EditText name = (EditText) findViewById(R.id.title);
-        name.setText(getIntent().getStringExtra("name"));
-        //name.setText(ProgramActivity.jsonobject.getString("name")));
-
-        listSource.setAdapter(new ArrayAdapter<String>(
-                this, R.layout.left_new_commands_list_design, textView, comands));
-
-
-        /*String[] str = new String[]{"5s", "1s", "10s", "1s"};
-        listSource.setAdapter(new CustomList(this, str, imageId));*/
-
-
-        listSource.setOnItemLongClickListener(listSourceItemLongClickListener);
-        listSource.setOnItemLongClickListener(listSourceItemLongClickListener);
-
-
-        droppedList = new ArrayList<String>();
-
-        //TODO: Send program name to database
-        //TODO: Get commands from database
-
-        droppedAdapter = new ArrayAdapter<String>(
-                this, R.layout.right_new_commands_list_design, textView, droppedList);
-        listTarget.setAdapter(droppedAdapter);
-
-
-        listSource.setOnDragListener(myDragEventListener);
-        targetLayout.setOnDragListener(myDragEventListener);
-
-        Button save = (Button) findViewById(R.id.save);
-        final ListView targetlist = (ListView) findViewById(R.id.targetlist);
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<String> newCommands = new ArrayList<String>();
-                int itemsCount = targetlist.getChildCount();
-                for (int i = 0; i < itemsCount; i++) {
-                    View view = targetlist.getChildAt(i);
-                    String command = ((TextView) view.findViewById(R.id.textView)).getText().toString();
-                    newCommands.add(command);
-                }
-                String commands = TextUtils.join(" ", newCommands).toLowerCase();
-                Log.e("Command", commands);
-                String name = (((EditText) findViewById(R.id.title)).getText().toString());
-
-                sendJSON(name, commands);
-
-            }
-        });
-
-
-    }
-
-    AdapterView.OnItemLongClickListener listSourceItemLongClickListener
-            = new AdapterView.OnItemLongClickListener(){
-
-        @Override
-        public boolean onItemLongClick(AdapterView<?> l, View v,
-                                       int position, long id) {
-
-            //Selected item is passed as item in dragData
-            ClipData.Item item = new ClipData.Item(comands[position]);
-
-            String[] clipDescription = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-            ClipData dragData = new ClipData((CharSequence)v.getTag(),
-                    clipDescription,
-                    item);
-            View.DragShadowBuilder myShadow = new MyDragShadowBuilder(v);
-
-            v.startDrag(dragData, //ClipData
-                    myShadow,  //View.DragShadowBuilder
-                    comands[position],  //Object myLocalState
-                    0);    //flags
-
-
-            return true;
-        }};
-
-    private static class MyDragShadowBuilder extends View.DragShadowBuilder {
-        private static Drawable shadow;
-
-        public MyDragShadowBuilder(View v) {
-            super(v);
-            shadow = new ColorDrawable(Color.LTGRAY);
-        }
-
-        @Override
-        public void onProvideShadowMetrics (Point size, Point touch){
-            int width = getView().getWidth();
-            int height = getView().getHeight();
-
-            shadow.setBounds(0, 0, width, height);
-            size.set(width, height);
-            touch.set(width / 2, height / 2);
-        }
-
-        @Override
-        public void onDrawShadow(Canvas canvas) {
-            shadow.draw(canvas);
-        }
-
-    }
-
-    protected class MyDragEventListener implements View.OnDragListener {
+    OnDragListener myOnDragListener = new OnDragListener() {
 
         @Override
         public boolean onDrag(View v, DragEvent event) {
-            final int action = event.getAction();
-
-            switch(action) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    //All involved view accept ACTION_DRAG_STARTED for MIMETYPE_TEXT_PLAIN
-                    if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN))
-                        return true; //Accept
-                    else return false; //reject
-                case DragEvent.ACTION_DRAG_ENTERED:
-                    return true;
-                case DragEvent.ACTION_DRAG_LOCATION:
-                    return true;
-                case DragEvent.ACTION_DRAG_EXITED:
-                    return true;
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED: break;
+                case DragEvent.ACTION_DRAG_ENTERED: break;
+                case DragEvent.ACTION_DRAG_EXITED: break;
                 case DragEvent.ACTION_DROP:
-                    // Gets the item containing the dragged data
-                    ClipData.Item item = event.getClipData().getItemAt(0);
-
-                    //If apply only if drop on buttonTarget
-                    if(v == targetLayout){
-                        String droppedItem = item.getText().toString();
-                        droppedList.add(droppedItem);
-                        droppedAdapter.notifyDataSetChanged();
-
-                        return true;
-                    }else{
-                        return false;
-                    }
-
-
+                    if(v == area1) break;
+                    View view = (View)event.getLocalState();
+                    LinearLayout oldParent = (LinearLayout)view.getParent();
+                    oldParent.removeAllViews();
+                    LinearLayout newParent = (LinearLayout)v;
+                    newParent.addView(view);
+                    addImg();
+                    break;
                 case DragEvent.ACTION_DRAG_ENDED:
-                    return true;
-                default: //unknown case
-                    return false;
-
+                default:
+                    break;
             }
+
+            return true;
+
+        }
+
+    };
+
+
+    void addImg(){
+        for(int i : imageId) {
+            ImageView imageView = new ImageView(this);
+            Drawable myDrawable = getResources().getDrawable(i);
+            imageView.setImageDrawable(myDrawable);
+            imageView.setOnLongClickListener(myOnLongClickListener);
+            area1.addView(imageView);
         }
     }
 
-    void sendJSON(String name, String commands){
+    void sendJSON(String ProgramName, String commands){
         JSONObject json = new JSONObject();
-        if (name.length() != 0 && commands.length() != 0) {
+        if (ProgramName.length() != 0 && commands.length() != 0) {
             try {
-                json.put("name", name);
+                json.put("name", ProgramName);
                 json.put("commands", commands);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             Log.e("JSOН", json.toString());
 
-            new POST().execute(json.toString());
-            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            //new POST().execute(json.toString());
+
+            Intent intent = null;
+            String name = getIntent().getStringExtra("name");
+            if(name.length() > 0){
+                intent = new Intent(getBaseContext(), ProgramActivity.class);
+            }else{
+                openTab2 = true;
+                intent = new Intent(getBaseContext(),MainActivity.class);
+            }
+
             startActivity(intent);
 
         }else  Toast.makeText(getApplicationContext(), "Fill all " , Toast.LENGTH_SHORT).show();
     }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -242,7 +168,28 @@ public class NewProgramActivity extends Activity {
     }
 
     public void onSaveClickListener(MenuItem item) {
-        Toast.makeText(getApplicationContext(), "Save", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, ProgramActivity.class));
+        List<String> newCommands = new ArrayList<String>();
+        int itemsCount = area2.getChildCount();
+        Log.e("Items", String.valueOf(itemsCount));
+        for (int i = 0; i < itemsCount; i++) {
+            View view = area2.getChildAt(i);
+            if(view instanceof ImageView) {
+                if (getResources().getDrawable(R.mipmap.ic_up).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
+                    newCommands.add("up");
+                }else if (getResources().getDrawable(R.mipmap.ic_down).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
+                    newCommands.add("down");
+                }else if (getResources().getDrawable(R.mipmap.ic_left).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
+                    newCommands.add("left");
+                }else if (getResources().getDrawable(R.mipmap.ic_right).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
+                    newCommands.add("right");
+                }
+            }else Log.e("View", "Not Image");
+
+        }
+        String commands = TextUtils.join(" ", newCommands).toLowerCase();
+        Log.e("Command", commands);
+        String name = (((EditText) findViewById(R.id.title)).getText().toString());
+        sendJSON(name, commands);
+
     }
 }

@@ -22,6 +22,8 @@ public class CustomList extends ArrayAdapter<String> {
         this.imageId = imageId;
 
     }
+
+
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();

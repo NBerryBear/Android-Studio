@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TabHost;
 
+import com.example.niki.berrybear.Programming.NewProgramActivity;
 import com.example.niki.berrybear.Tabs.HomeActivity;
 import com.example.niki.berrybear.Tabs.ListProgramsActivity;
 
@@ -28,9 +29,13 @@ public class MainActivity extends TabActivity {
         tab2.setIndicator("Programs");
         tab2.setContent(new Intent(this, ListProgramsActivity.class));
 
-
         tabHost.addTab(tab1);
         tabHost.addTab(tab2);
+
+        if(NewProgramActivity.openTab2){
+            NewProgramActivity.openTab2 = false;
+            tabHost.setCurrentTabByTag("Two");
+        }
 
     }
 

@@ -46,15 +46,15 @@ public class ProgramActivity extends ActionBarActivity {
 
         //TODO: Get information and change title by name
 
-        commands = getCommands();
+        //commands = getCommands();
 
-        /*commands = new int[]{
+        commands = new int[]{
                 R.mipmap.ic_up,
                 R.mipmap.ic_down,
                 R.mipmap.ic_left,
                 R.mipmap.ic_up
 
-        };*/
+        };
 
         Log.e("Size", String.valueOf(commands.length));
         String [] str =  new String[commands.length];
