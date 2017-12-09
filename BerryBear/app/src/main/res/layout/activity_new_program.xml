@@ -5,7 +5,8 @@
     android:orientation="vertical"
     android:padding="4dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.niki.berrybear.Programming.NewProgramActivity">
+    tools:context="com.example.niki.berrybear.Programming.NewProgramActivity"
+    android:weightSum="1">
 
 
     <LinearLayout
@@ -16,21 +17,21 @@
 
         <EditText
             android:id="@+id/title"
-            android:layout_width="match_parent"
+            android:layout_width="353dp"
             android:layout_height="match_parent"
             android:gravity="center"
             android:hint="Name"
             tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="0dp"
-            android:layout_weight="0.87"
-            />
+            tools:layout_editor_absoluteY="0dp" />
 
     </LinearLayout>
 
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="423dp"
+        android:orientation="horizontal"
+        android:layout_weight="0.91">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,9 +44,9 @@
                 android:id="@+id/area2"
                 android:layout_width="match_parent"
                 android:layout_height="362dp"
+                android:layout_gravity="top"
                 android:layout_margin="4dp"
                 android:layout_weight="0.80"
-                android:layout_gravity="top"
                 android:gravity="center_horizontal"
                 android:orientation="vertical" />
 
@@ -66,4 +67,11 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Save" />
+
 </LinearLayout>
