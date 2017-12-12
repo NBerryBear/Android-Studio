@@ -3,6 +3,7 @@ package com.example.niki.berrybear.Tabs;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -22,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -46,6 +48,11 @@ public class ListProgramsActivity extends Activity {
         setContentView(R.layout.activity_list_programs);
 
 
+
+        Date newDate  = new Date(System.currentTimeMillis());
+        int hours = newDate.getHours();
+
+        Log.e("time", String.valueOf(hours));
 
         //List<String> names = getNames();
         String[] names = {"Program 1", "Program 2", "Program 3", "Program 4",

@@ -1,6 +1,7 @@
 package com.example.niki.berrybear.Tabs;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -11,6 +12,7 @@ import com.example.niki.berrybear.R;
 
 public class HomeActivity extends Activity {
 
+    boolean light_on = false;
     /*private boolean doubleBackToExitPressedOnce;
     private Handler mHandler = new Handler();
 
@@ -50,6 +52,7 @@ public class HomeActivity extends Activity {
         ImageButton Down = (ImageButton) findViewById(R.id.Down);
         ImageButton Right = (ImageButton) findViewById(R.id.Right);
         ImageButton Left = (ImageButton) findViewById(R.id.Left);
+        final ImageButton Light = (ImageButton) findViewById(R.id.light);
 
         Up.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +85,25 @@ public class HomeActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "Left", Toast.LENGTH_SHORT).show();
                 //TODO: Post request {direction:left}
             }
+        });
+
+        Light.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Drawable myDrawable;
+                if(light_on){
+                    myDrawable = getResources().getDrawable(R.mipmap.ic_light_off);
+                    light_on = false;
+                }
+                else{
+                    myDrawable = getResources().getDrawable(R.mipmap.ic_light_on);
+                    light_on = true;
+                }
+
+                Light.setImageDrawable(myDrawable);
+                //TODO: Post request {direction:up}
+            }
+
         });
 
         /*final EditText display1=(EditText) findViewById(R.id.ip);

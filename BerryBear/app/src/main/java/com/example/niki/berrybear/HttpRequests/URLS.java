@@ -6,6 +6,6 @@ public class URLS {
 
     public static String getProgramURl(){
         if (url != null) return url;
-        return "";
+        return "http://192.168.1.2:8000/programs/";
     }
 }

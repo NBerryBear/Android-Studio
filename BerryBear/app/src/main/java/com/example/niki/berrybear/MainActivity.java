@@ -2,7 +2,9 @@ package com.example.niki.berrybear;
 
 import android.app.TabActivity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.widget.TabHost;
 
 import com.example.niki.berrybear.Programming.NewProgramActivity;
@@ -12,6 +14,7 @@ import com.example.niki.berrybear.Tabs.ListProgramsActivity;
 @SuppressWarnings("depreciation")
 public class MainActivity extends TabActivity {
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
