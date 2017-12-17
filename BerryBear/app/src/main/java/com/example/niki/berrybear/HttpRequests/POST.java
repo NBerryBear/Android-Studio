@@ -1,6 +1,7 @@
 package com.example.niki.berrybear.HttpRequests;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -10,18 +11,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 
 public class POST extends AsyncTask<String, Void, JSONObject> {
-    String content = "";
+    public static String content;
 
-    public JSONObject doInBackground(String... json) {
+    public JSONObject doInBackground(String... string) {
         URL url = null;
         try {
-            url = new URL(URLS.getProgramURl());
+            url = new URL(string[0]);;
+            String json = string[1];
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             //connection.connect();
@@ -32,7 +32,8 @@ public class POST extends AsyncTask<String, Void, JSONObject> {
             connection.setDoOutput(true);
 
             OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-            out.write(json[0]);
+            Log.e("Json", json);
+            out.write(json);
             out.flush();
             out.close();
 
@@ -49,10 +50,6 @@ public class POST extends AsyncTask<String, Void, JSONObject> {
             }
             connection.disconnect();
 
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

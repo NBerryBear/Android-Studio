@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.niki.berrybear.Adapters.CustomList;
 import com.example.niki.berrybear.HttpRequests.GET;
+import com.example.niki.berrybear.HttpRequests.POST;
 import com.example.niki.berrybear.HttpRequests.URLS;
 import com.example.niki.berrybear.R;
 import com.example.niki.berrybear.Tabs.ListProgramsActivity;
@@ -35,7 +36,7 @@ public class ProgramActivity extends ActionBarActivity {
     public static int[] commands;
     public static String[] arrayOfString;
     static JSONObject jsonobject = null;
-
+    int id = get_id(ListProgramsActivity.jsonarray);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,14 +81,14 @@ public class ProgramActivity extends ActionBarActivity {
     }
 
     public void onRunClickListener(MenuItem item) {
-        Toast.makeText(getApplicationContext(), "Run", Toast.LENGTH_SHORT).show();
-        //TODO: Send program name to database
-        //TODO: Get commands from database
+        Toast.makeText(getApplicationContext(), String.valueOf(id), Toast.LENGTH_SHORT).show();
+        new POST().execute(idUri(id), "");
+
     }
 
     public void onEditClickListener(MenuItem item) {
         Intent intent = new Intent(getBaseContext(), NewProgramActivity.class);
-        intent.putExtra("name", name);
+        intent.putExtra("name", id);
         startActivity(intent);
     }
 
@@ -135,7 +136,6 @@ public class ProgramActivity extends ActionBarActivity {
     int[] getCommands() {
         String program = "";
         int[] commands = null;
-        int id = get_id(ListProgramsActivity.jsonarray);
         String uri = idUri(id);
         Log.e("uri", uri);
         try {
@@ -154,7 +154,7 @@ public class ProgramActivity extends ActionBarActivity {
     }
 
     String idUri(int id){
-        return URLS.getProgramURl() + String.valueOf(id);
+        return URLS.getProgramURl() + String.valueOf(id) + "/";
     }
 
     int[] toIntArray(List<Integer> picturs){

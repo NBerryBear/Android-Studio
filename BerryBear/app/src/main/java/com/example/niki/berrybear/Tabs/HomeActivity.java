@@ -3,11 +3,17 @@ package com.example.niki.berrybear.Tabs;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.niki.berrybear.HttpRequests.POST;
+import com.example.niki.berrybear.HttpRequests.URLS;
 import com.example.niki.berrybear.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class HomeActivity extends Activity {
@@ -58,7 +64,8 @@ public class HomeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Up", Toast.LENGTH_SHORT).show();
-                //TODO: Post request {direction:up}
+                send("up");
+
             }
 
         });
@@ -67,7 +74,7 @@ public class HomeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Down", Toast.LENGTH_SHORT).show();
-                //TODO: Post request {direction:down}
+                send("down");
             }
         });
 
@@ -75,7 +82,7 @@ public class HomeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Right", Toast.LENGTH_SHORT).show();
-                //TODO: Post request {direction:right}
+                send("right");
             }
         });
 
@@ -83,7 +90,7 @@ public class HomeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Left", Toast.LENGTH_SHORT).show();
-                //TODO: Post request {direction:left}
+                send("left");
             }
         });
 
@@ -91,6 +98,7 @@ public class HomeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Drawable myDrawable;
+                JSONObject json = new JSONObject();
                 if(light_on){
                     myDrawable = getResources().getDrawable(R.mipmap.ic_light_off);
                     light_on = false;
@@ -101,24 +109,29 @@ public class HomeActivity extends Activity {
                 }
 
                 Light.setImageDrawable(myDrawable);
-                //TODO: Post request {direction:up}
+
+                try {
+                    json.put("name" , "direction");
+                    json.put("settings" , light_on);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
         });
 
-        /*final EditText display1=(EditText) findViewById(R.id.ip);
+    }
 
+    void send(String direction){
+        JSONObject json = new JSONObject();
+        try {
+            json.put("name" , "direction");
+            json.put("settings" , direction);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        Button one= (Button) findViewById(R.id.button);
-        one.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), display1.getText().toString() , Toast.LENGTH_SHORT).show();
-                URLS.url = "http://" + display1.getText().toString() + "/programs/";
-            }
-        });*/
-
-
-
+        Log.e("JSon", json.toString());
+        new POST().execute(URLS.getRobotURl(), json.toString());
     }
 }

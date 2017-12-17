@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBarActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
@@ -28,6 +27,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.niki.berrybear.Adapters.SimpleImageArrayAdapter;
+import com.example.niki.berrybear.HttpRequests.POST;
+import com.example.niki.berrybear.HttpRequests.URLS;
 import com.example.niki.berrybear.MainActivity;
 import com.example.niki.berrybear.R;
 
@@ -188,9 +189,88 @@ public class NewProgramActivity extends ActionBarActivity {
         area1.addView(button3);
     }
 
-    void sendJSON(String ProgramName, String commands){
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.save, menu);
+        return true;
+    }
+
+    public void onSaveClickListener(MenuItem item) {
+        int itemsCount = area2.getChildCount();
+        Log.e("Items", String.valueOf(itemsCount));
+        List<JSONObject> commands = new ArrayList<>();
+        try {
+            for (int i = 0; i < itemsCount; i++) {
+                JSONObject json = new JSONObject();
+                View view = area2.getChildAt(i);
+                if(view instanceof ImageView) {
+                    if (getResources().getDrawable(R.mipmap.ic_up).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
+                        json.put("name" , "direction");
+                        json.put("settings" , "up");
+                    }else if (getResources().getDrawable(R.mipmap.ic_down).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
+                        json.put("name" , "direction");
+                        json.put("settings" , "down");
+                    }else if (getResources().getDrawable(R.mipmap.ic_left).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
+                        json.put("name" , "direction");
+                        json.put("settings" , "left");
+                    }else if (getResources().getDrawable(R.mipmap.ic_right).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
+                        json.put("name" , "direction");
+                        json.put("settings" , "right");
+                    }else if (getResources().getDrawable(R.mipmap.ic_light_on).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
+                        json.put("name" , "light");
+                        json.put("settings" , true);
+                    }else if (getResources().getDrawable(R.mipmap.ic_light_off).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
+                        json.put("name", "light");
+                        json.put("settings", false);
+                    }
+                }else if(view instanceof LinearLayout){
+                    View command =((LinearLayout) view).getChildAt(0);
+                    if(((Button) command).getText() == "Forward") {
+                        json.put("name", "moving");
+                        View spinner = ((LinearLayout) view).getChildAt(1);
+                        Integer number = ((Spinner)spinner).getSelectedItemPosition();
+                        String direction = null;
+                        if(number == 0) {
+                            direction = "up";
+                        }else if(number == 1) {
+                            direction = "down";
+                        }else if(number == 2) {
+                            direction = "left";
+                        }else if(number == 3) {
+                            direction = "right";
+                        }
+
+                        json.put("settings" , direction);
+
+                    }else if(((Button) command).getText() == "Wait") {
+                        View editText = ((LinearLayout) view).getChildAt(1);
+                        String text = ((EditText) editText).getText().toString();
+                        Integer seconds = Integer.valueOf(text);
+                        if(seconds < 1){
+                            seconds = 1;
+                        }
+                        json.put("name", "wait");
+                        json.put("settings", seconds);
+                    }
+                }else if(view instanceof Button){
+                    json.put("name", "stop");
+                    json.put("settings", true);
+                }
+                commands.add(json);
+
+            }
+            String name = (((EditText) findViewById(R.id.title)).getText().toString());
+            sendJSON(name, commands);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void sendJSON(String ProgramName, List<JSONObject> commands){
         JSONObject json = new JSONObject();
-        if (ProgramName.length() != 0 && commands.length() != 0) {
+        if (ProgramName.length() != 0 && commands.size() != 0) {
             try {
                 json.put("name", ProgramName);
                 json.put("commands", commands);
@@ -199,7 +279,7 @@ public class NewProgramActivity extends ActionBarActivity {
             }
             Log.e("JSOН", json.toString());
 
-            //new POST().execute(json.toString());
+            new POST().execute(URLS.getProgramURl(), json.toString());
 
             Intent intent = null;
             String name = getIntent().getStringExtra("name");
@@ -215,43 +295,4 @@ public class NewProgramActivity extends ActionBarActivity {
         }else  Toast.makeText(getApplicationContext(), "Fill all " , Toast.LENGTH_SHORT).show();
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.save, menu);
-        return true;
-    }
-
-    public void onSaveClickListener(MenuItem item) {
-        List<String> newCommands = new ArrayList<String>();
-        int itemsCount = area2.getChildCount();
-        Log.e("Items", String.valueOf(itemsCount));
-        for (int i = 0; i < itemsCount; i++) {
-            View view = area2.getChildAt(i);
-            if(view instanceof ImageView) {
-                if (getResources().getDrawable(R.mipmap.ic_up).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
-                    newCommands.add("up");
-                }else if (getResources().getDrawable(R.mipmap.ic_down).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
-                    newCommands.add("down");
-                }else if (getResources().getDrawable(R.mipmap.ic_left).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
-                    newCommands.add("left");
-                }else if (getResources().getDrawable(R.mipmap.ic_right).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
-                    newCommands.add("right");
-                }else if (getResources().getDrawable(R.mipmap.ic_light_on).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
-                    newCommands.add("light_on");
-                }else if (getResources().getDrawable(R.mipmap.ic_light_off).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
-                    newCommands.add("light_off");
-                }
-            }else if(view instanceof Button){
-
-            }else Log.e("View", "Not Image");
-
-        }
-        String commands = TextUtils.join(" ", newCommands).toLowerCase();
-        Log.e("Command", commands);
-        String name = (((EditText) findViewById(R.id.title)).getText().toString());
-        sendJSON(name, commands);
-
-    }
 }
