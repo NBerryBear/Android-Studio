@@ -3,10 +3,9 @@ package com.example.niki.berrybear.Tabs;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.example.niki.berrybear.HttpRequests.POST;
 import com.example.niki.berrybear.HttpRequests.URLS;
@@ -54,43 +53,82 @@ public class HomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        ImageButton Up = (ImageButton) findViewById(R.id.Up);
-        ImageButton Down = (ImageButton) findViewById(R.id.Down);
-        ImageButton Right = (ImageButton) findViewById(R.id.Right);
-        ImageButton Left = (ImageButton) findViewById(R.id.Left);
+        final ImageButton Up = (ImageButton) findViewById(R.id.Up);
+        final ImageButton Down = (ImageButton) findViewById(R.id.Down);
+        final ImageButton Right = (ImageButton) findViewById(R.id.Right);
+        final ImageButton Left = (ImageButton) findViewById(R.id.Left);
         final ImageButton Light = (ImageButton) findViewById(R.id.light);
 
-        Up.setOnClickListener(new View.OnClickListener() {
+        Up.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Up", Toast.LENGTH_SHORT).show();
-                send("up");
-
-            }
-
-        });
-
-        Down.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Down", Toast.LENGTH_SHORT).show();
-                send("down");
-            }
-        });
-
-        Right.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Right", Toast.LENGTH_SHORT).show();
-                send("right");
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Up.setImageResource(R.mipmap.ic_up_click);
+                    start("up");
+                    return true;
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Up.setImageResource(R.mipmap.ic_up);
+                    stop();
+                    return true;
+                }
+                return false;
             }
         });
 
-        Left.setOnClickListener(new View.OnClickListener() {
+
+        Down.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Left", Toast.LENGTH_SHORT).show();
-                send("left");
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Down.setImageResource(R.mipmap.ic_down_click);
+                    start("down");
+                    return true;
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Down.setImageResource(R.mipmap.ic_down);
+                    stop();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        Left.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Left.setImageResource(R.mipmap.ic_left_click);
+                    start("left");
+                    return true;
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Left.setImageResource(R.mipmap.ic_left);
+                    stop();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        Right.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Right.setImageResource(R.mipmap.ic_right_click);
+                    start("right");
+                    return true;
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Right.setImageResource(R.mipmap.ic_right);
+                    stop();
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -111,27 +149,40 @@ public class HomeActivity extends Activity {
                 Light.setImageDrawable(myDrawable);
 
                 try {
-                    json.put("name" , "direction");
+                    json.put("name" , "light");
                     json.put("settings" , light_on);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                new POST().execute(URLS.getRobotURl(), json.toString());
             }
 
         });
 
     }
 
-    void send(String direction){
+    void start(String direction){
         JSONObject json = new JSONObject();
         try {
-            json.put("name" , "direction");
+            json.put("name" , "moving");
             json.put("settings" , direction);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Log.e("JSon", json.toString());
+        new POST().execute(URLS.getRobotURl(), json.toString());
+    }
+
+    void stop(){
+        JSONObject json = new JSONObject();
+        try {
+            json.put("name" , "stop");
+            json.put("settings" , true);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         new POST().execute(URLS.getRobotURl(), json.toString());
     }
 }

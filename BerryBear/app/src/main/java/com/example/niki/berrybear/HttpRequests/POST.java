@@ -17,11 +17,11 @@ import java.net.URL;
 public class POST extends AsyncTask<String, Void, JSONObject> {
     public static String content;
 
-    public JSONObject doInBackground(String... string) {
+    public JSONObject doInBackground(String... params) {
         URL url = null;
         try {
-            url = new URL(string[0]);;
-            String json = string[1];
+            url = new URL(params[0]);;
+            String json = params[1];
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             //connection.connect();

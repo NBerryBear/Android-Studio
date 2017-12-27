@@ -81,6 +81,19 @@ public class ListProgramsActivity extends Activity {
         typeMap=((TextView) v).getText().toString();
         Intent intent = new Intent(getBaseContext(), ProgramActivity.class);
         intent.putExtra("name", typeMap);
+        for (int i = 0; i < jsonarray.length(); i++) {
+            JSONObject jsonobject = null;
+            try {
+                jsonobject = jsonarray.getJSONObject(i);
+                if(jsonobject.get("name") == typeMap){
+                    intent.putExtra("id", (Integer) jsonobject.get("id"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         startActivity(intent);
     }
 
@@ -91,12 +104,9 @@ public class ListProgramsActivity extends Activity {
 
     List<String> getNames(){
         String programs = "";
-        GET request = new GET();
         try {
-            programs = request.execute(URLS.getProgramURl()).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+            programs = new GET().execute(URLS.getProgramURl()).get();
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
