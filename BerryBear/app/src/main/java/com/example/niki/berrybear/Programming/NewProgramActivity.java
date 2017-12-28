@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.example.niki.berrybear.Adapters.SimpleImageArrayAdapter;
 import com.example.niki.berrybear.HttpRequests.POST;
+import com.example.niki.berrybear.HttpRequests.PUT;
 import com.example.niki.berrybear.HttpRequests.URLS;
 import com.example.niki.berrybear.MainActivity;
 import com.example.niki.berrybear.R;
@@ -279,14 +280,16 @@ public class NewProgramActivity extends ActionBarActivity {
             }
             Log.e("JSOН", json.toString());
 
-            new POST().execute(URLS.getProgramURl(), json.toString());
+
 
             Intent intent = null;
             String name = getIntent().getStringExtra("name");
             if(name.length() > 0){
+                new PUT().execute(URLS.getProgramURl(), json.toString());
                 intent = new Intent(getBaseContext(), ProgramActivity.class);
             }else{
                 openTab2 = true;
+                new POST().execute(URLS.getProgramURl(), json.toString());
                 intent = new Intent(getBaseContext(),MainActivity.class);
             }
 

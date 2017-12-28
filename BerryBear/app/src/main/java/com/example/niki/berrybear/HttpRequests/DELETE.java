@@ -8,22 +8,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class GET extends AsyncTask<String, Integer, String> {
+
+public class DELETE extends AsyncTask<String, Integer, String> {
     private String content = "";
 
     protected String doInBackground(String... params) {
         URL url = null;
+        HttpURLConnection connection = new Connection().doInBackground("DELETE", params[0]);
         try {
-            HttpURLConnection connection = new Connection().doInBackground("GET", params[0]);
-
             BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-            String line;
-
-            while ((line = rd.readLine()) != null) {
-                content += line + "\n";
-            }
-
         } catch (IOException e) {
             e.printStackTrace();
         }

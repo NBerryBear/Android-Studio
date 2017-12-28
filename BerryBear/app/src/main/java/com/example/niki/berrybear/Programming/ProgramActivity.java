@@ -15,10 +15,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.niki.berrybear.HttpRequests.DELETE;
 import com.example.niki.berrybear.HttpRequests.GET;
 import com.example.niki.berrybear.HttpRequests.POST;
 import com.example.niki.berrybear.HttpRequests.URLS;
 import com.example.niki.berrybear.R;
+import com.example.niki.berrybear.Tabs.ListProgramsActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,45 +71,11 @@ public class ProgramActivity extends ActionBarActivity {
     }
 
     public void onDeleteClickListener(MenuItem item) {
-        //TODO: send to database which to delete
+        new DELETE().execute(idUri(id), "");
+        Intent intent = new Intent(getBaseContext(), ListProgramsActivity.class);
+        startActivity(intent);
     }
 
-
-    /*@RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public int[] commands(String json) throws JSONException {
-        String commands = "";
-        List<Integer> picturs = new ArrayList<Integer>();
-
-        Log.e("Commands", json);
-        JSONObject jsonobj = null;
-        try {
-            jsonobj = new JSONObject(json);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        commands = jsonobj.getString("commands");
-        arrayOfString = commands.split(" ");
-        for(String c : arrayOfString ){
-            switch (c) {
-                case "left":
-                    picturs.add(R.mipmap.ic_left);
-                    break;
-                case "right":
-                    picturs.add(R.mipmap.ic_right);
-                    break;
-                case "up":
-                    picturs.add(R.mipmap.ic_up);
-                    break;
-                case "down":
-                    picturs.add(R.mipmap.ic_down);
-                    break;
-            }
-        }
-
-
-        return toIntArray(picturs);
-    }*/
 
     String idUri(int id){
         return URLS.getProgramURl() + String.valueOf(id) + "/";
@@ -217,35 +185,5 @@ public class ProgramActivity extends ActionBarActivity {
         }
         return null;
     }
-
-    /*int[] toIntArray(List<Integer> picturs){
-        int[] ret = new int[picturs.size()];
-        for(int i = 0;i < ret.length;i++)
-            ret[i] = picturs.get(i);
-        return ret;
-    }
-
-    int get_id(JSONArray json){
-        int id = 0;
-        for (int i = 0; i < json.length(); i++) {
-
-            try {
-                jsonobject = json.getJSONObject(i);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                if (name.equals(jsonobject.getString("name"))) {
-                    id = jsonobject.getInt("id");
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-            return id;
-    }*/
-
 
 }
