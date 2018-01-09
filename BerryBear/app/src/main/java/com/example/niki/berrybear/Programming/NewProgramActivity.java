@@ -99,6 +99,8 @@ public class NewProgramActivity extends ActionBarActivity {
                     if(v == area1){
                         View view = (View) event.getLocalState();
                         LinearLayout oldParent = (LinearLayout) view.getParent();
+                        if(view instanceof LinearLayout){Log.e("View", ":inner");}
+                        else Log.e("View", "other");
                         if(oldParent != area1) oldParent.removeView(view);
                     }else {
                         View view = (View) event.getLocalState();
@@ -116,15 +118,20 @@ public class NewProgramActivity extends ActionBarActivity {
                                         new Integer[]{R.mipmap.ic_up, R.mipmap.ic_down, R.mipmap.ic_left, R.mipmap.ic_right});
                                 spinner.setAdapter(adapter);
                                 spinner.setLayoutParams(new Spinner.LayoutParams(Spinner.LayoutParams.WRAP_CONTENT, Spinner.LayoutParams.WRAP_CONTENT));
+                                view.setLongClickable(false);
+                                view.setClickable(false);
                                 layout.addView(view);
                                 layout.addView(spinner);
 
                             }else if (((Button) view).getText() == "Wait"){
                                 EditText text = new EditText(NewProgramActivity.this);
                                 text.setHint("1s");
+                                view.setLongClickable(false);
+                                view.setClickable(false);
                                 layout.addView(view);
                                 layout.addView(text);
                             }
+                            layout.setOnLongClickListener(myOnLongClickListener);
                             layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                             area2.addView(layout);
                         }else area2.addView(view);
