@@ -10,14 +10,14 @@
 
 
     <LinearLayout
-        android:layout_width="390dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="1">
 
         <EditText
             android:id="@+id/title"
-            android:layout_width="314dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:hint="Name"
@@ -43,11 +43,10 @@
             <ScrollView
                 android:id="@+id/scrollView1"
                 android:layout_width="match_parent"
-                android:layout_height="278dp"
+                android:layout_height="match_parent"
                 android:layout_alignParentBottom="true"
-                android:layout_gravity="center"
                 android:layout_weight="1.05"
-                android:orientation="vertical"
+                android:orientation="vertical"                           
                 android:paddingBottom="20dp">
 
                 <LinearLayout
@@ -66,7 +65,7 @@
             <HorizontalScrollView
                 android:id="@+id/scrollView2"
                 android:layout_width="match_parent"
-                android:layout_height="61dp"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="center"
                 android:orientation="horizontal"

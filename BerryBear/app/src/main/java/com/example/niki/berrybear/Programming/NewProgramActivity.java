@@ -42,19 +42,12 @@ import java.util.List;
 public class NewProgramActivity extends ActionBarActivity {
 
     LinearLayout area1, area2;
-    ScrollView scrow;
-    //View view = null;
-    boolean drag = false;
-    Bundle tempBundle;
     public static boolean openTab2 = false;
-    NewProgramActivity forNewViews;
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        tempBundle = savedInstanceState;
         setTitle("");
         setContentView(R.layout.activity_new_program);
         EditText name = (EditText) findViewById(R.id.title);
@@ -62,19 +55,22 @@ public class NewProgramActivity extends ActionBarActivity {
 
         area1 = (LinearLayout) findViewById(R.id.area1);
         area2 = (LinearLayout) findViewById(R.id.area2);
-        scrow = (ScrollView) findViewById(R.id.scrollView1);
+        ScrollView scroll  = (ScrollView) findViewById(R.id.scrollView1);
 
-        forNewViews = this;
+         if(name.length() > 3){
+            area2.addView(ProgramActivity.list);
+        }
+
         TypedArray arrayResources = getResources().obtainTypedArray(
                 R.array.resicon);
 
-        addImg();
+        addElements();
 
         arrayResources.recycle();
 
         area1.setOnDragListener(myOnDragListener);
         area2.setOnDragListener(myOnDragListener);
-        scrow.setOnDragListener(myOnDragListener);
+        scroll.setOnDragListener(myOnDragListener);
 
     }
 
@@ -85,7 +81,6 @@ public class NewProgramActivity extends ActionBarActivity {
             ClipData data = ClipData.newPlainText("", "");
             DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
             v.startDrag(data, shadowBuilder, v, 0);
-            //v.setVisibility(View.INVISIBLE);
             return true;
         }
 
@@ -93,6 +88,7 @@ public class NewProgramActivity extends ActionBarActivity {
 
     OnDragListener myOnDragListener = new OnDragListener() {
 
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public boolean onDrag(View v, DragEvent event) {
             switch (event.getAction()) {
@@ -108,16 +104,15 @@ public class NewProgramActivity extends ActionBarActivity {
                         View view = (View) event.getLocalState();
                         LinearLayout oldParent = (LinearLayout) view.getParent();
                         oldParent.removeAllViews();
-                        //LinearLayout newParent = (LinearLayout) v;
 
                         if(view instanceof ImageView){
                             view.setPadding(30, 5, 30, 5);
                         }
                         if((view instanceof Button) && ((Button) view).getText() != "Stop"){
-                            LinearLayout layout = new LinearLayout(forNewViews);
+                            LinearLayout layout = new LinearLayout(NewProgramActivity.this);
                             if(((Button) view).getText() == "Forward") {
-                                Spinner spinner = new Spinner(forNewViews);
-                                SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(forNewViews,
+                                Spinner spinner = new Spinner(NewProgramActivity.this);
+                                SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(NewProgramActivity.this,
                                         new Integer[]{R.mipmap.ic_up, R.mipmap.ic_down, R.mipmap.ic_left, R.mipmap.ic_right});
                                 spinner.setAdapter(adapter);
                                 spinner.setLayoutParams(new Spinner.LayoutParams(Spinner.LayoutParams.WRAP_CONTENT, Spinner.LayoutParams.WRAP_CONTENT));
@@ -125,7 +120,7 @@ public class NewProgramActivity extends ActionBarActivity {
                                 layout.addView(spinner);
 
                             }else if (((Button) view).getText() == "Wait"){
-                                EditText text = new EditText(forNewViews);
+                                EditText text = new EditText(NewProgramActivity.this);
                                 text.setHint("1s");
                                 layout.addView(view);
                                 layout.addView(text);
@@ -134,7 +129,8 @@ public class NewProgramActivity extends ActionBarActivity {
                             area2.addView(layout);
                         }else area2.addView(view);
 
-                        addImg();
+
+                        addElements();
                     }
 
                     break;
@@ -151,7 +147,7 @@ public class NewProgramActivity extends ActionBarActivity {
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    void addImg(){
+    void addElements(){
         List<Integer> imageId  = new ArrayList<Integer>();
         imageId.add(R.mipmap.ic_up);
         imageId.add(R.mipmap.ic_down);
@@ -280,13 +276,14 @@ public class NewProgramActivity extends ActionBarActivity {
             }
             Log.e("JSOН", json.toString());
 
-
-
             Intent intent = null;
             String name = getIntent().getStringExtra("name");
             if(name.length() > 0){
-                new PUT().execute(URLS.getProgramURl(), json.toString());
+                int id = ProgramActivity.id;
+                new PUT().execute(URLS.getIdURl(id), json.toString());
                 intent = new Intent(getBaseContext(), ProgramActivity.class);
+                intent.putExtra("name", ProgramName);
+                intent.putExtra("id", id);
             }else{
                 openTab2 = true;
                 new POST().execute(URLS.getProgramURl(), json.toString());

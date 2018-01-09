@@ -1,7 +1,6 @@
 package com.example.niki.berrybear.HttpRequests;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,15 +33,11 @@ public class Connection extends AsyncTask<String, String, HttpURLConnection> {
     static void send(HttpURLConnection connection, String json){
         try {
             OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-            Log.e("Json", json);
             out.write(json);
             out.flush();
             out.close();
 
             int res = connection.getResponseCode();
-
-            System.out.println(res);
-
 
             InputStream is = connection.getInputStream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is));

@@ -32,8 +32,8 @@ public class ProgramActivity extends ActionBarActivity {
 
     String name = "";
     public static int[] commands;
-    LinearLayout list;
-    int id;
+    static LinearLayout list;
+    static int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +42,10 @@ public class ProgramActivity extends ActionBarActivity {
         setTitle(name);
         setContentView(R.layout.activity_program);
 
-        //TODO: Get information and change title by name
-
         id = getIntent().getIntExtra("id", 0);
 
         list = (LinearLayout) findViewById(R.id.commandList);
-        show_commads();
+        show_commands();
 
     }
 
@@ -60,31 +58,27 @@ public class ProgramActivity extends ActionBarActivity {
 
     public void onRunClickListener(MenuItem item) {
         Toast.makeText(getApplicationContext(), String.valueOf(id), Toast.LENGTH_SHORT).show();
-        new POST().execute(idUri(id), "");
+        new POST().execute(URLS.getIdURl(id), "");
 
     }
 
     public void onEditClickListener(MenuItem item) {
         Intent intent = new Intent(getBaseContext(), NewProgramActivity.class);
-        intent.putExtra("name", id);
+        intent.putExtra("name", super.getTitle());
         startActivity(intent);
     }
 
     public void onDeleteClickListener(MenuItem item) {
-        new DELETE().execute(idUri(id), "");
+        new DELETE().execute(URLS.getIdURl(id), "");
         Intent intent = new Intent(getBaseContext(), ListProgramsActivity.class);
         startActivity(intent);
     }
 
 
-    String idUri(int id){
-        return URLS.getProgramURl() + String.valueOf(id) + "/";
-    }
-
-    void show_commads() {
+    void show_commands() {
         String program = "";
         int[] commands = null;
-        String uri = idUri(id);
+        String uri = URLS.getIdURl(id);
         Log.e("uri", uri);
         try {
 
@@ -99,8 +93,11 @@ public class ProgramActivity extends ActionBarActivity {
         }
     }
 
+
+
+
     void add_commands(JSONArray json) throws JSONException {
-        Log.e("Here", "Here");
+
         for (int i = 0; i < json.length(); i++)
         {
             JSONObject jsonObj = json.getJSONObject(i);
@@ -154,7 +151,6 @@ public class ProgramActivity extends ActionBarActivity {
 
                 TextView seconds = new TextView(this);
                 seconds.setText(jsonObj.getString("settings"));
-                //seconds.setText(jsonObj.getString(" " + "settings" + "s"));
                 layout.addView(seconds);
 
 
