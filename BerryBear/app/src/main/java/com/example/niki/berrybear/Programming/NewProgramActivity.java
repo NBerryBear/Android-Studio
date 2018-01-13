@@ -42,7 +42,7 @@ import java.util.List;
 public class NewProgramActivity extends ActionBarActivity {
 
     LinearLayout area1, area2;
-    public static boolean openTab2 = false;
+
 
 
     @Override
@@ -53,19 +53,28 @@ public class NewProgramActivity extends ActionBarActivity {
         EditText name = (EditText) findViewById(R.id.title);
         name.setText(getIntent().getStringExtra("name"));
 
+
         area1 = (LinearLayout) findViewById(R.id.area1);
         area2 = (LinearLayout) findViewById(R.id.area2);
         ScrollView scroll  = (ScrollView) findViewById(R.id.scrollView1);
-
-         if(name.length() > 3){
-            area2.addView(ProgramActivity.list);
-        }
 
         TypedArray arrayResources = getResources().obtainTypedArray(
                 R.array.resicon);
 
         addElements();
 
+        if(name.length() > 3){
+            LinearLayout list = ProgramActivity.list;
+            for(int i =0; i < list.getChildCount(); i = 0){
+                View a = list.getChildAt(i);
+                list.removeView(a);
+                area2.addView(a);
+                Log.e("Log", String.valueOf(i));
+
+            }
+            //area1.setContentDescription(ProgramActivity.list.getContentDescription());
+            //area1.addView(ProgramActivity.list);
+        }
         arrayResources.recycle();
 
         area1.setOnDragListener(myOnDragListener);
@@ -73,6 +82,7 @@ public class NewProgramActivity extends ActionBarActivity {
         scroll.setOnDragListener(myOnDragListener);
 
     }
+
 
     OnLongClickListener myOnLongClickListener = new OnLongClickListener() {
 
@@ -292,7 +302,7 @@ public class NewProgramActivity extends ActionBarActivity {
                 intent.putExtra("name", ProgramName);
                 intent.putExtra("id", id);
             }else{
-                openTab2 = true;
+                MainActivity.openTab2 = true;
                 new POST().execute(URLS.getProgramURl(), json.toString());
                 intent = new Intent(getBaseContext(),MainActivity.class);
             }
@@ -301,5 +311,20 @@ public class NewProgramActivity extends ActionBarActivity {
 
         }else  Toast.makeText(getApplicationContext(), "Fill all " , Toast.LENGTH_SHORT).show();
     }
+
+    public void onBackPressed(){
+        Intent intent;
+        if(getIntent().getStringExtra("name").length() > 0) {
+            intent = new Intent(getBaseContext(), ProgramActivity.class);
+            intent.putExtra("name", getIntent().getStringExtra("name"));
+            intent.putExtra("id", ProgramActivity.id);
+        }else{
+            MainActivity.openTab2 = true;
+            intent = new Intent(getBaseContext(),MainActivity.class);
+        }
+
+        startActivity(intent);
+    }
+
 
 }

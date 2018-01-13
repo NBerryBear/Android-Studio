@@ -9,9 +9,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.niki.berrybear.HttpRequests.GET;
+import com.example.niki.berrybear.HttpRequests.POST;
 import com.example.niki.berrybear.HttpRequests.URLS;
 import com.example.niki.berrybear.MainActivity;
 import com.example.niki.berrybear.Programming.NewProgramActivity;
@@ -38,7 +38,6 @@ public class ListProgramsActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        super.onDestroy();
         startActivity(new Intent(this, MainActivity.class));
     }
 
@@ -54,11 +53,11 @@ public class ListProgramsActivity extends Activity {
 
         Log.e("time", String.valueOf(hours));
 
-        //List<String> names = getNames();
-        String[] names = {"Program 1", "Program 2", "Program 3", "Program 4",
+        List<String> names = getNames();
+        /*String[] names = {"Program 1", "Program 2", "Program 3", "Program 4",
                 "Program 5", "Program 6", "Program 7", "Program 8",
                 "Program 9", "Program 10", "Program 11", "Program 12",
-                "Program 13", "Program 14"};
+                "Program 13", "Program 14"};*/
         ListView list = (ListView) findViewById(R.id.list);
             list.setAdapter(new ArrayAdapter<String>(
                 this, R.layout.list_design,
@@ -97,8 +96,12 @@ public class ListProgramsActivity extends Activity {
         startActivity(intent);
     }
 
-    public void onRunButtonClickListener(View v) {
-        Toast.makeText(getApplicationContext(), "Run", Toast.LENGTH_SHORT).show();
+    public void onRunButtonClickListener(View v) throws JSONException {
+        View parentRow = (View) v.getParent();
+        ListView listView = (ListView) parentRow.getParent();
+        final int position = listView.getPositionForView(parentRow);
+        int id = (Integer) jsonarray.getJSONObject(position).get("id");
+        new POST().execute(URLS.getIdURl(id), "");
     }
 
 

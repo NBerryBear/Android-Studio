@@ -13,14 +13,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.niki.berrybear.HttpRequests.DELETE;
 import com.example.niki.berrybear.HttpRequests.GET;
 import com.example.niki.berrybear.HttpRequests.POST;
 import com.example.niki.berrybear.HttpRequests.URLS;
+import com.example.niki.berrybear.MainActivity;
 import com.example.niki.berrybear.R;
-import com.example.niki.berrybear.Tabs.ListProgramsActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,10 +29,13 @@ import java.util.concurrent.ExecutionException;
 
 public class ProgramActivity extends ActionBarActivity {
 
-    String name = "";
-    public static int[] commands;
+    static String name;
     static LinearLayout list;
     static int id;
+
+    public static LinearLayout getlist() {
+        return list;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,12 @@ public class ProgramActivity extends ActionBarActivity {
 
     }
 
+    public void onBackPressed(){
+        MainActivity.openTab2 = true;
+        Intent intent = new Intent(getBaseContext(),MainActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -57,7 +65,6 @@ public class ProgramActivity extends ActionBarActivity {
     }
 
     public void onRunClickListener(MenuItem item) {
-        Toast.makeText(getApplicationContext(), String.valueOf(id), Toast.LENGTH_SHORT).show();
         new POST().execute(URLS.getIdURl(id), "");
 
     }
@@ -70,21 +77,21 @@ public class ProgramActivity extends ActionBarActivity {
 
     public void onDeleteClickListener(MenuItem item) {
         new DELETE().execute(URLS.getIdURl(id), "");
-        Intent intent = new Intent(getBaseContext(), ListProgramsActivity.class);
+        MainActivity.openTab2 = true;
+        Intent intent = new Intent(getBaseContext(), MainActivity.class);
         startActivity(intent);
     }
 
 
     void show_commands() {
         String program = "";
-        int[] commands = null;
         String uri = URLS.getIdURl(id);
         Log.e("uri", uri);
         try {
 
             program = new GET().execute(uri).get();
             Log.e("JSON", program);
-            program = program.replace("\"","'");
+            program = program.replace("\"", "'");
             JSONArray json = new JSONArray((new JSONObject(program)).get("commands").toString());
             add_commands(json);
 
@@ -94,27 +101,24 @@ public class ProgramActivity extends ActionBarActivity {
     }
 
 
-
-
     void add_commands(JSONArray json) throws JSONException {
 
-        for (int i = 0; i < json.length(); i++)
-        {
+        for (int i = 0; i < json.length(); i++) {
             JSONObject jsonObj = json.getJSONObject(i);
-            if(jsonObj.getString("name").equals("direction")){
+            if (jsonObj.getString("name").equals("direction")) {
                 ImageView img = imageButton(jsonObj.getString("settings"));
                 img.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                 img.setPadding(30, 5, 30, 5);
                 list.addView(img);
-            }else if(jsonObj.getString("name").equals("light")) {
-                Log.e("light", jsonObj.getString("settings") );
+            } else if (jsonObj.getString("name").equals("light")) {
+                Log.e("light", jsonObj.getString("settings"));
                 Integer picture = null;
-                if(jsonObj.getString("settings").equals("true")){
+                if (jsonObj.getString("settings").equals("true")) {
                     picture = R.mipmap.ic_light_on;
-                } else if(jsonObj.getString("settings").equals("false")){
+                } else if (jsonObj.getString("settings").equals("false")) {
                     picture = R.mipmap.ic_light_off;
                 }
-                if(picture != null){
+                if (picture != null) {
                     ImageView image = new ImageView(this);
                     Drawable myDrawable = getResources().getDrawable(picture);
                     image.setImageDrawable(myDrawable);
@@ -122,7 +126,7 @@ public class ProgramActivity extends ActionBarActivity {
                     image.setPadding(30, 5, 30, 5);
                     list.addView(image);
                 }
-            }else if(jsonObj.getString("name").equals("moving")){
+            } else if (jsonObj.getString("name").equals("moving")) {
                 LinearLayout layout = new LinearLayout(this);
                 Button button1 = new Button(this);
                 button1.setText("Forward");
@@ -134,14 +138,14 @@ public class ProgramActivity extends ActionBarActivity {
                 layout.addView(img);
 
                 list.addView(layout);
-            }else if(jsonObj.getString("name").equals("stop")){
+            } else if (jsonObj.getString("name").equals("stop")) {
                 Button button1 = new Button(this);
                 button1.setText("Stop");
                 button1.setBackgroundResource(R.drawable.red_round_button);
                 button1.setTextColor(Color.rgb(225, 225, 225));
                 button1.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                 list.addView(button1);
-            }else if(jsonObj.getString("name").equals("wait")){
+            } else if (jsonObj.getString("name").equals("wait")) {
                 LinearLayout layout = new LinearLayout(this);
                 Button button1 = new Button(this);
                 button1.setText("Wait");
@@ -161,25 +165,26 @@ public class ProgramActivity extends ActionBarActivity {
     }
 
 
-    ImageView imageButton( String direction){
+    ImageView imageButton(String direction) {
         Log.e("JSON", "direction");
         Integer picture = null;
-        if(direction.equals("up")){
+        if (direction.equals("up")) {
             picture = R.mipmap.ic_up;
-        } else if(direction.equals("down")){
+        } else if (direction.equals("down")) {
             picture = R.mipmap.ic_down;
-        } else if(direction.equals("left")){
+        } else if (direction.equals("left")) {
             picture = R.mipmap.ic_left;
-        }else if(direction.equals("right")){
+        } else if (direction.equals("right")) {
             picture = R.mipmap.ic_right;
         }
-        if(picture != null){
+        if (picture != null) {
             ImageView image = new ImageView(this);
             Drawable myDrawable = getResources().getDrawable(picture);
             image.setImageDrawable(myDrawable);
             return image;
         }
         return null;
-    }
 
+
+    }
 }

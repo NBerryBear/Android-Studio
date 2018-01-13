@@ -18,35 +18,10 @@ import org.json.JSONObject;
 public class HomeActivity extends Activity {
 
     boolean light_on = false;
-    /*private boolean doubleBackToExitPressedOnce;
-    private Handler mHandler = new Handler();
-
-    private final Runnable mRunnable = new Runnable() {
-        @Override
-        public void run() {
-            doubleBackToExitPressedOnce = false;
-        }
-    };
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //android.os.Process.killProcess(android.os.Process.myPid());
-        if (mHandler != null) { mHandler.removeCallbacks(mRunnable); }
-    }
 
     @Override
     public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
-        }
-
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Click twice to exit", Toast.LENGTH_SHORT).show();
-
-        mHandler.postDelayed(mRunnable, 2000);
-    }*/
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

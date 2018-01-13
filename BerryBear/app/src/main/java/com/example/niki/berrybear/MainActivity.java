@@ -7,13 +7,12 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.widget.TabHost;
 
-import com.example.niki.berrybear.Programming.NewProgramActivity;
 import com.example.niki.berrybear.Tabs.HomeActivity;
 import com.example.niki.berrybear.Tabs.ListProgramsActivity;
 
 @SuppressWarnings("depreciation")
 public class MainActivity extends TabActivity {
-
+    public static boolean openTab2;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +34,8 @@ public class MainActivity extends TabActivity {
         tabHost.addTab(tab1);
         tabHost.addTab(tab2);
 
-        if(NewProgramActivity.openTab2){
-            NewProgramActivity.openTab2 = false;
+        if(openTab2){
+            openTab2 = false;
             tabHost.setCurrentTabByTag("Two");
         }
 
