@@ -42,6 +42,7 @@ import java.util.List;
 public class NewProgramActivity extends ActionBarActivity {
 
     LinearLayout area1, area2;
+    ScrollView scroll;
 
 
 
@@ -56,7 +57,7 @@ public class NewProgramActivity extends ActionBarActivity {
 
         area1 = (LinearLayout) findViewById(R.id.area1);
         area2 = (LinearLayout) findViewById(R.id.area2);
-        ScrollView scroll  = (ScrollView) findViewById(R.id.scrollView1);
+        scroll  = (ScrollView) findViewById(R.id.scrollView1);
 
         TypedArray arrayResources = getResources().obtainTypedArray(
                 R.array.resicon);
@@ -144,6 +145,13 @@ public class NewProgramActivity extends ActionBarActivity {
                             area2.addView(layout);
                         }else area2.addView(view);
 
+                        scroll.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                scroll.fullScroll(ScrollView.FOCUS_DOWN);
+                            }
+                        });
 
                         addElements();
                     }
