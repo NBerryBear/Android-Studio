@@ -67,13 +67,11 @@ public class NewProgramActivity extends ActionBarActivity {
             LinearLayout list = ProgramActivity.list;
             for(int i =0; i < list.getChildCount(); i = 0){
                 View a = list.getChildAt(i);
+                a.setOnLongClickListener(myOnLongClickListener);
                 list.removeView(a);
                 area2.addView(a);
-                Log.e("Log", String.valueOf(i));
 
             }
-            //area1.setContentDescription(ProgramActivity.list.getContentDescription());
-            //area1.addView(ProgramActivity.list);
         }
         arrayResources.recycle();
 
