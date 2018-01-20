@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.example.niki.berrybear.Programming.ProgramActivity;
 import com.example.niki.berrybear.R;
 
-public class ProgramViews extends ProgramActivity {
-    static ProgramActivity thiss;
+public class ProgramViews {
+    private static ProgramActivity thiss;
 
     public ProgramViews(ProgramActivity thiss){
         this.thiss = thiss;

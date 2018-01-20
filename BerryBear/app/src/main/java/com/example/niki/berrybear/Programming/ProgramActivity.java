@@ -89,6 +89,7 @@ public class ProgramActivity extends ActionBarActivity {
 
     void add_commands(JSONArray json) throws JSONException {
         new ProgramViews(this);
+
         for (int i = 0; i < json.length(); i++) {
             JSONObject jsonObj = json.getJSONObject(i);
             String commands = jsonObj.getString("name");

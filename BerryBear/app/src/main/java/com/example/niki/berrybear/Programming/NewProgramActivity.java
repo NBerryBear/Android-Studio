@@ -26,12 +26,12 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.niki.berrybear.Adapters.SimpleImageArrayAdapter;
 import com.example.niki.berrybear.HttpRequests.POST;
 import com.example.niki.berrybear.HttpRequests.PUT;
 import com.example.niki.berrybear.HttpRequests.URLS;
 import com.example.niki.berrybear.MainActivity;
 import com.example.niki.berrybear.R;
+import com.example.niki.berrybear.Views.NewProgramViews;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,11 +39,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.niki.berrybear.Views.NewProgramViews.getImageButton;
+import static com.example.niki.berrybear.Views.NewProgramViews.getMovingView;
+import static com.example.niki.berrybear.Views.NewProgramViews.getWaitView;
+
 public class NewProgramActivity extends ActionBarActivity {
 
     LinearLayout area1, area2;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class NewProgramActivity extends ActionBarActivity {
         setContentView(R.layout.activity_new_program);
         EditText name = (EditText) findViewById(R.id.title);
         name.setText(getIntent().getStringExtra("name"));
+        new NewProgramViews(this);
 
 
         area1 = (LinearLayout) findViewById(R.id.area1);
@@ -69,11 +72,7 @@ public class NewProgramActivity extends ActionBarActivity {
                 View a = list.getChildAt(i);
                 list.removeView(a);
                 area2.addView(a);
-                Log.e("Log", String.valueOf(i));
-
             }
-            //area1.setContentDescription(ProgramActivity.list.getContentDescription());
-            //area1.addView(ProgramActivity.list);
         }
         arrayResources.recycle();
 
@@ -109,58 +108,43 @@ public class NewProgramActivity extends ActionBarActivity {
                     if(v == area1){
                         View view = (View) event.getLocalState();
                         LinearLayout oldParent = (LinearLayout) view.getParent();
-                        if(view instanceof LinearLayout){Log.e("View", ":inner");}
-                        else Log.e("View", "other");
                         if(oldParent != area1) oldParent.removeView(view);
+
                     }else {
                         View view = (View) event.getLocalState();
                         LinearLayout oldParent = (LinearLayout) view.getParent();
                         oldParent.removeAllViews();
 
-                        if(view instanceof ImageView){
-                            view.setPadding(30, 5, 30, 5);
-                        }
-                        if((view instanceof Button) && ((Button) view).getText() != "Stop"){
-                            LinearLayout layout = new LinearLayout(NewProgramActivity.this);
-                            if(((Button) view).getText() == "Forward") {
-                                Spinner spinner = new Spinner(NewProgramActivity.this);
-                                SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(NewProgramActivity.this,
-                                        new Integer[]{R.mipmap.ic_up, R.mipmap.ic_down, R.mipmap.ic_left, R.mipmap.ic_right});
-                                spinner.setAdapter(adapter);
-                                spinner.setLayoutParams(new Spinner.LayoutParams(Spinner.LayoutParams.WRAP_CONTENT, Spinner.LayoutParams.WRAP_CONTENT));
-                                view.setLongClickable(false);
-                                view.setClickable(false);
-                                layout.addView(view);
-                                layout.addView(spinner);
+                        View viewToAdd = null;
 
-                            }else if (((Button) view).getText() == "Wait"){
-                                EditText text = new EditText(NewProgramActivity.this);
-                                text.setHint("1s");
-                                view.setLongClickable(false);
-                                view.setClickable(false);
-                                layout.addView(view);
-                                layout.addView(text);
+                        if(view instanceof ImageView){
+                            viewToAdd = getImageButton(view);
+                        }else if((view instanceof Button)) {
+                            if (((Button) view).getText() == "Moving") {
+                                viewToAdd = getMovingView(view);
+                                viewToAdd.setOnLongClickListener(myOnLongClickListener);
+                            }else if (((Button) view).getText() == "Wait") {
+                                viewToAdd = getWaitView(view);
+                                viewToAdd.setOnLongClickListener(myOnLongClickListener);
                             }
-                            layout.setOnLongClickListener(myOnLongClickListener);
-                            layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                            area2.addView(layout);
-                        }else area2.addView(view);
+                        }
+
+                        if(viewToAdd != null) area2.addView(viewToAdd);
+                        else area2.addView(view);
 
 
                         addElements();
                     }
-
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
                 default:
                     break;
             }
-
             return true;
-
         }
 
     };
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -182,7 +166,7 @@ public class NewProgramActivity extends ActionBarActivity {
 
 
         Button button1 = new Button(this);
-        button1.setText("Forward");
+        button1.setText("Moving");
         button1.setBackgroundResource(R.drawable.purple_round_button);
         button1.setTextColor(Color.rgb(225, 225, 225));
         button1.setOnLongClickListener(myOnLongClickListener);
@@ -215,6 +199,7 @@ public class NewProgramActivity extends ActionBarActivity {
         int itemsCount = area2.getChildCount();
         Log.e("Items", String.valueOf(itemsCount));
         List<JSONObject> commands = new ArrayList<>();
+
         try {
             for (int i = 0; i < itemsCount; i++) {
                 JSONObject json = new JSONObject();
@@ -261,10 +246,11 @@ public class NewProgramActivity extends ActionBarActivity {
                     }else if(((Button) command).getText() == "Wait") {
                         View editText = ((LinearLayout) view).getChildAt(1);
                         String text = ((EditText) editText).getText().toString();
-                        Integer seconds = Integer.valueOf(text);
-                        if(seconds < 1){
+                        Integer seconds = null;
+                        if(text.length() == 0) {
                             seconds = 1;
-                        }
+                        } else Integer.valueOf(text);
+
                         json.put("name", "wait");
                         json.put("settings", seconds);
                     }
