@@ -97,8 +97,17 @@ public class ProgramActivity extends ActionBarActivity {
             View view = null;
 
             switch (commands) {
-                case "direction":
-                    view = ProgramViews.getImageButton(settings);
+                case "up":
+                    view = ProgramViews.getImageButton("up", settings);
+                    break;
+                case "down":
+                    view = ProgramViews.getImageButton("down", settings);
+                    break;
+                case "right":
+                    view = ProgramViews.getImageButton("right", settings);
+                    break;
+                case "left":
+                    view = ProgramViews.getImageButton("left", settings);
                     break;
                 case "light":
                     view = ProgramViews.getLightButton(settings);

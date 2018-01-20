@@ -17,8 +17,7 @@ public class ProgramViews {
         this.thiss = thiss;
     }
 
-
-    public static View getImageButton(String direction) {
+    public static View getImage(String direction){
         Integer picture = null;
         if (direction.equals("up")) {
             picture = R.mipmap.ic_up;
@@ -35,10 +34,21 @@ public class ProgramViews {
             image.setTag(picture);
             image.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             image.setPadding(30, 5, 30, 5);
-            return  image;
+            return image;
         }
-
         return null;
+    }
+
+    public static View getImageButton(String direction, String time) {
+
+        ImageView image = (ImageView) getImage(direction);
+        TextView seconds = new TextView(thiss);
+        seconds.setText(time);
+
+        LinearLayout layout = new LinearLayout(thiss);
+        layout.addView(image);
+        layout.addView(seconds);
+        return  layout;
 
     }
 
@@ -72,7 +82,7 @@ public class ProgramViews {
         button1.setTextColor(Color.rgb(225, 225, 225));
         layout.addView(button1);
 
-        ImageView img = (ImageView) getImageButton(direction);
+        ImageView img = (ImageView) getImage(direction);
         layout.addView(img);
 
         return  layout;

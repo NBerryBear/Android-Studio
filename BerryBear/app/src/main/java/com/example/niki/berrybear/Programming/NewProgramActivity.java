@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.niki.berrybear.HttpRequests.POST;
@@ -41,7 +42,7 @@ import java.util.List;
 import static com.example.niki.berrybear.Views.NewProgramViews.getDirectionButton;
 import static com.example.niki.berrybear.Views.NewProgramViews.getLightButton;
 import static com.example.niki.berrybear.Views.NewProgramViews.getMovingView;
-import static com.example.niki.berrybear.Views.NewProgramViews.getStopView;
+import static com.example.niki.berrybear.Views.NewProgramViews.getView;
 import static com.example.niki.berrybear.Views.NewProgramViews.getWaitView;
 
 public class NewProgramActivity extends ActionBarActivity {
@@ -70,9 +71,9 @@ public class NewProgramActivity extends ActionBarActivity {
         if(name.length() > 3){
             LinearLayout list = ProgramActivity.list;
             for(int i =0; i < list.getChildCount(); i = 0){
-                View a = list.getChildAt(i);
-                list.removeView(a);
-                area2.addView(a);
+                View view = list.getChildAt(i);
+                list.removeView(view);
+                area2.addView(editView(view));
             }
         }
         arrayResources.recycle();
@@ -83,7 +84,44 @@ public class NewProgramActivity extends ActionBarActivity {
 
     }
 
+    View editView(View view){
+        View viewToAdd = null;
+        if(view instanceof LinearLayout){
+            View command =((LinearLayout) view).getChildAt(0);
+            if(command instanceof ImageView){
+                View textView = ((LinearLayout) view).getChildAt(1);
+                String text = ((TextView) textView).getText().toString();
+                ((LinearLayout) view).removeAllViews();
+                viewToAdd = getDirectionButton(command, text);
+            }else if(command instanceof Button){
+                if(((Button) command).getText() == "Moving") {;
+                    View spinner = ((LinearLayout) view).getChildAt(1);
+                    int position = -1;
+                    if((Integer)((ImageView) spinner).getTag() == R.mipmap.ic_up){
+                        position = 0;
+                    } else if((Integer)((ImageView) spinner).getTag() == R.mipmap.ic_down){
+                        position = 1;
+                    }else if((Integer)((ImageView) spinner).getTag() == R.mipmap.ic_left){
+                        position = 2;
+                    }else if((Integer)((ImageView) spinner).getTag() == R.mipmap.ic_right){
+                        position = 3;
+                    }
+                    ((LinearLayout) view).removeAllViews();
+                    viewToAdd = getMovingView(command, position);
 
+                }else if(((Button) command).getText() == "Wait") {
+                    View textView = ((LinearLayout) view).getChildAt(1);
+                    String text = ((TextView) textView).getText().toString();
+                    ((LinearLayout) view).removeAllViews();
+                    viewToAdd = getWaitView(command, text);
+                }
+            }
+        }else viewToAdd = getView(view);
+
+
+        viewToAdd.setOnLongClickListener(myOnLongClickListener);
+        return viewToAdd;
+    }
     OnLongClickListener myOnLongClickListener = new OnLongClickListener() {
 
         @Override
@@ -122,16 +160,16 @@ public class NewProgramActivity extends ActionBarActivity {
                             if ((Integer)((ImageView) view).getTag() == R.mipmap.ic_light_on ||
                                     (Integer)((ImageView) view).getTag() == R.mipmap.ic_light_off) {
                                 viewToAdd = getLightButton(view);
-                            }else viewToAdd = getDirectionButton(view);
+                            }else viewToAdd = getDirectionButton(view, "");
                         }else if((view instanceof Button)) {
                             if (((Button) view).getText() == "Moving") {
-                                viewToAdd = getMovingView(view);
+                                viewToAdd = getMovingView(view, -1);
                                 viewToAdd.setOnLongClickListener(myOnLongClickListener);
                             }else if (((Button) view).getText() == "Wait") {
-                                viewToAdd = getWaitView(view);
+                                viewToAdd = getWaitView(view, "");
                                 viewToAdd.setOnLongClickListener(myOnLongClickListener);
                             }else if (((Button) view).getText() == "Stop"){
-                                viewToAdd = getStopView(view);
+                                viewToAdd = getView(view);
                             }
                         }
 
@@ -230,8 +268,8 @@ public class NewProgramActivity extends ActionBarActivity {
                        }
                         json.put("settings", getSeconds(view));
 
-                    }else if(view instanceof Button){
-                        if(((Button) command).getText() == "Forward") {
+                    }else if(command instanceof Button){
+                        if(((Button) command).getText() == "Moving") {
                             json.put("name", "moving");
                             View spinner = ((LinearLayout) view).getChildAt(1);
                             Integer number = ((Spinner)spinner).getSelectedItemPosition();
@@ -250,10 +288,12 @@ public class NewProgramActivity extends ActionBarActivity {
                         }else if(((Button) command).getText() == "Wait") {
                             json.put("name", "wait");
                             json.put("settings", getSeconds(view));
-                        }else {
-                            json.put("name", "stop");
-                            json.put("settings", true);
                         }
+                    }
+                }else if(view instanceof Button){
+                    if(((Button) view).getText() == "Stop") {
+                        json.put("name", "stop");
+                        json.put("settings", true);
                     }
                 }
                 commands.add(json);

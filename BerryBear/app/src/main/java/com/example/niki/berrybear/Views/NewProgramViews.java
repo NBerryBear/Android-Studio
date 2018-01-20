@@ -23,25 +23,29 @@ public class NewProgramViews {
         return view;
     }
 
-    public static View getDirectionButton(View view) {
+    public static View getDirectionButton(View view, String time) {
         LinearLayout layout = new LinearLayout(thiss);
         EditText text = new EditText(thiss);
         text.setHint("1s");
+        if(time != "") text.setText(time);
         view.setLongClickable(false);
         view.setClickable(false);
-        view.setPadding(30, 0, 30, 0);
+        view.setPadding(30, 0, 0, 0);
         layout.addView(view);
         layout.addView(text);
         return layout;
     }
 
-    public static View getMovingView(View view) {
+    public static View getMovingView(View view, int position) {
         LinearLayout layout = new LinearLayout(thiss);
         Spinner spinner = new Spinner(thiss);
         SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(thiss,
                 new Integer[]{R.mipmap.ic_up, R.mipmap.ic_down, R.mipmap.ic_left, R.mipmap.ic_right});
         spinner.setAdapter(adapter);
         spinner.setLayoutParams(new Spinner.LayoutParams(Spinner.LayoutParams.WRAP_CONTENT, Spinner.LayoutParams.WRAP_CONTENT));
+        if(position > -1){
+            spinner.setSelection(position);
+        }
         view.setLongClickable(false);
         view.setClickable(false);
         layout.addView(view);
@@ -51,10 +55,11 @@ public class NewProgramViews {
     }
 
 
-    public static View getWaitView(View view){
+    public static View getWaitView(View view, String time){
         LinearLayout layout = new LinearLayout(thiss);
         EditText text = new EditText(thiss);
         text.setHint("1s");
+        if(time != "") text.setText(time);
         view.setLongClickable(false);
         view.setClickable(false);
         layout.addView(view);
@@ -64,7 +69,7 @@ public class NewProgramViews {
         return layout;
     }
 
-    public static View getStopView(View view){
+    public static View getView(View view){
         return view;
     }
 }
