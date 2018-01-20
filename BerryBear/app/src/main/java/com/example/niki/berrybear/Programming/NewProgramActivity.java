@@ -4,7 +4,6 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -39,8 +38,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.niki.berrybear.Views.NewProgramViews.getImageButton;
+import static com.example.niki.berrybear.Views.NewProgramViews.getDirectionButton;
+import static com.example.niki.berrybear.Views.NewProgramViews.getLightButton;
 import static com.example.niki.berrybear.Views.NewProgramViews.getMovingView;
+import static com.example.niki.berrybear.Views.NewProgramViews.getStopView;
 import static com.example.niki.berrybear.Views.NewProgramViews.getWaitView;
 
 public class NewProgramActivity extends ActionBarActivity {
@@ -118,7 +119,10 @@ public class NewProgramActivity extends ActionBarActivity {
                         View viewToAdd = null;
 
                         if(view instanceof ImageView){
-                            viewToAdd = getImageButton(view);
+                            if ((Integer)((ImageView) view).getTag() == R.mipmap.ic_light_on ||
+                                    (Integer)((ImageView) view).getTag() == R.mipmap.ic_light_off) {
+                                viewToAdd = getLightButton(view);
+                            }else viewToAdd = getDirectionButton(view);
                         }else if((view instanceof Button)) {
                             if (((Button) view).getText() == "Moving") {
                                 viewToAdd = getMovingView(view);
@@ -126,11 +130,12 @@ public class NewProgramActivity extends ActionBarActivity {
                             }else if (((Button) view).getText() == "Wait") {
                                 viewToAdd = getWaitView(view);
                                 viewToAdd.setOnLongClickListener(myOnLongClickListener);
+                            }else if (((Button) view).getText() == "Stop"){
+                                viewToAdd = getStopView(view);
                             }
                         }
 
-                        if(viewToAdd != null) area2.addView(viewToAdd);
-                        else area2.addView(view);
+                        area2.addView(viewToAdd);
 
 
                         addElements();
@@ -158,8 +163,8 @@ public class NewProgramActivity extends ActionBarActivity {
         imageId.add(R.mipmap.ic_light_off);
         for(int i : imageId) {
             ImageView image = new ImageView(this);
-            Drawable myDrawable = getResources().getDrawable(i);
-            image.setImageDrawable(myDrawable);
+            image.setImageResource(i);
+            image.setTag(i);
             image.setOnLongClickListener(myOnLongClickListener);
             area1.addView(image);
         }
@@ -199,64 +204,57 @@ public class NewProgramActivity extends ActionBarActivity {
         int itemsCount = area2.getChildCount();
         Log.e("Items", String.valueOf(itemsCount));
         List<JSONObject> commands = new ArrayList<>();
-
         try {
             for (int i = 0; i < itemsCount; i++) {
                 JSONObject json = new JSONObject();
                 View view = area2.getChildAt(i);
                 if(view instanceof ImageView) {
-                    if (getResources().getDrawable(R.mipmap.ic_up).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
-                        json.put("name" , "direction");
-                        json.put("settings" , "up");
-                    }else if (getResources().getDrawable(R.mipmap.ic_down).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
-                        json.put("name" , "direction");
-                        json.put("settings" , "down");
-                    }else if (getResources().getDrawable(R.mipmap.ic_left).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
-                        json.put("name" , "direction");
-                        json.put("settings" , "left");
-                    }else if (getResources().getDrawable(R.mipmap.ic_right).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
-                        json.put("name" , "direction");
-                        json.put("settings" , "right");
-                    }else if (getResources().getDrawable(R.mipmap.ic_light_on).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
+                    if ((Integer)((ImageView) view).getTag() == R.mipmap.ic_light_on) {
                         json.put("name" , "light");
                         json.put("settings" , true);
-                    }else if (getResources().getDrawable(R.mipmap.ic_light_off).getConstantState() == ((ImageView) view).getDrawable().getConstantState()) {
+                    }else if ((Integer)((ImageView) view).getTag() == R.mipmap.ic_light_off) {
                         json.put("name", "light");
                         json.put("settings", false);
                     }
                 }else if(view instanceof LinearLayout){
                     View command =((LinearLayout) view).getChildAt(0);
-                    if(((Button) command).getText() == "Forward") {
-                        json.put("name", "moving");
-                        View spinner = ((LinearLayout) view).getChildAt(1);
-                        Integer number = ((Spinner)spinner).getSelectedItemPosition();
-                        String direction = null;
-                        if(number == 0) {
-                            direction = "up";
-                        }else if(number == 1) {
-                            direction = "down";
-                        }else if(number == 2) {
-                            direction = "left";
-                        }else if(number == 3) {
-                            direction = "right";
+                    if(command instanceof ImageView){
+                       if((Integer)((ImageView) command).getTag() == R.mipmap.ic_up){
+                           json.put("name", "up");
+                       } else if((Integer)((ImageView) command).getTag() == R.mipmap.ic_down){
+                           json.put("name", "down");
+                       }else if((Integer)((ImageView) command).getTag() == R.mipmap.ic_right){
+                           json.put("name", "right");
+                       }else if((Integer)((ImageView) command).getTag() == R.mipmap.ic_left){
+                           json.put("name", "left");
+                       }
+                        json.put("settings", getSeconds(view));
+
+                    }else if(view instanceof Button){
+                        if(((Button) command).getText() == "Forward") {
+                            json.put("name", "moving");
+                            View spinner = ((LinearLayout) view).getChildAt(1);
+                            Integer number = ((Spinner)spinner).getSelectedItemPosition();
+                            String direction = null;
+                            if(number == 0) {
+                                direction = "up";
+                            }else if(number == 1) {
+                                direction = "down";
+                            }else if(number == 2) {
+                                direction = "left";
+                            }else if(number == 3) {
+                                direction = "right";
+                            }
+                            json.put("settings" , direction);
+
+                        }else if(((Button) command).getText() == "Wait") {
+                            json.put("name", "wait");
+                            json.put("settings", getSeconds(view));
+                        }else {
+                            json.put("name", "stop");
+                            json.put("settings", true);
                         }
-
-                        json.put("settings" , direction);
-
-                    }else if(((Button) command).getText() == "Wait") {
-                        View editText = ((LinearLayout) view).getChildAt(1);
-                        String text = ((EditText) editText).getText().toString();
-                        Integer seconds = null;
-                        if(text.length() == 0) {
-                            seconds = 1;
-                        } else Integer.valueOf(text);
-
-                        json.put("name", "wait");
-                        json.put("settings", seconds);
                     }
-                }else if(view instanceof Button){
-                    json.put("name", "stop");
-                    json.put("settings", true);
                 }
                 commands.add(json);
 
@@ -266,6 +264,17 @@ public class NewProgramActivity extends ActionBarActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private int getSeconds(View view) {
+        View editText = ((LinearLayout) view).getChildAt(1);
+        String text = ((EditText) editText).getText().toString();
+        Integer seconds = null;
+        if(text.length() == 0) {
+            seconds = 1;
+        } else seconds = Integer.valueOf(text);
+
+        return seconds;
     }
 
     void sendJSON(String ProgramName, List<JSONObject> commands){

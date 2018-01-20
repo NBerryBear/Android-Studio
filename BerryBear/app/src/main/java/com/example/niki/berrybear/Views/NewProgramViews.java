@@ -18,9 +18,21 @@ public class NewProgramViews {
     }
 
 
-    public static View getImageButton(View view) {
-        view.setPadding(30, 5, 30, 5);
+    public static View getLightButton(View view) {
+        view.setPadding(30, 0, 30, 0);
         return view;
+    }
+
+    public static View getDirectionButton(View view) {
+        LinearLayout layout = new LinearLayout(thiss);
+        EditText text = new EditText(thiss);
+        text.setHint("1s");
+        view.setLongClickable(false);
+        view.setClickable(false);
+        view.setPadding(30, 0, 30, 0);
+        layout.addView(view);
+        layout.addView(text);
+        return layout;
     }
 
     public static View getMovingView(View view) {
@@ -50,5 +62,9 @@ public class NewProgramViews {
         layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
         return layout;
+    }
+
+    public static View getStopView(View view){
+        return view;
     }
 }

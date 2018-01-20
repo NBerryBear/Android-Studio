@@ -32,6 +32,7 @@ public class ProgramViews {
         if (picture != null) {
             ImageView image = new ImageView(thiss);
             image.setImageResource(picture);
+            image.setTag(picture);
             image.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             image.setPadding(30, 5, 30, 5);
             return  image;
@@ -53,6 +54,7 @@ public class ProgramViews {
         if (picture != null) {
             ImageView image = new ImageView(thiss);
             image.setImageResource(picture);
+            image.setTag(picture);
             image.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             image.setPadding(30, 5, 30, 5);
             return image;
