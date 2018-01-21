@@ -53,11 +53,11 @@ public class ListProgramsActivity extends Activity {
 
         Log.e("time", String.valueOf(hours));
 
-        List<String> names = getNames();
-        /*String[] names = {"Program 1", "Program 2", "Program 3", "Program 4",
+        //List<String> names = getNames();
+        String[] names = {"Program 1", "Program 2", "Program 3", "Program 4",
                 "Program 5", "Program 6", "Program 7", "Program 8",
                 "Program 9", "Program 10", "Program 11", "Program 12",
-                "Program 13", "Program 14"};*/
+                "Program 13", "Program 14"};
         ListView list = (ListView) findViewById(R.id.list);
             list.setAdapter(new ArrayAdapter<String>(
                 this, R.layout.list_design,

@@ -48,6 +48,7 @@ import static com.example.niki.berrybear.Views.NewProgramViews.getWaitView;
 public class NewProgramActivity extends ActionBarActivity {
 
     LinearLayout area1, area2;
+    ScrollView scroll;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,7 @@ public class NewProgramActivity extends ActionBarActivity {
 
         area1 = (LinearLayout) findViewById(R.id.area1);
         area2 = (LinearLayout) findViewById(R.id.area2);
-        ScrollView scroll  = (ScrollView) findViewById(R.id.scrollView1);
+        scroll  = (ScrollView) findViewById(R.id.scrollView1);
 
         TypedArray arrayResources = getResources().obtainTypedArray(
                 R.array.resicon);
@@ -174,6 +175,14 @@ public class NewProgramActivity extends ActionBarActivity {
                         }
 
                         area2.addView(viewToAdd);
+
+                        scroll.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                scroll.fullScroll(ScrollView.FOCUS_DOWN);
+                            }
+                        });
 
 
                         addElements();
@@ -297,6 +306,7 @@ public class NewProgramActivity extends ActionBarActivity {
                     }
                 }
                 commands.add(json);
+
 
             }
             String name = (((EditText) findViewById(R.id.title)).getText().toString());

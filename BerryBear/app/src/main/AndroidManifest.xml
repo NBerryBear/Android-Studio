@@ -31,6 +31,7 @@
         <activity android:name=".Tabs.ListProgramsActivity" />
         <activity android:name=".Programming.NewProgramActivity" />
         <activity android:name=".Programming.ProgramActivity" />
+        <activity android:name=".Tabs.InformationActivity"></activity>
     </application>
 
 </manifest>
