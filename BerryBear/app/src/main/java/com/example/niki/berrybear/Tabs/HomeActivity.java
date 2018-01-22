@@ -14,6 +14,8 @@ import com.example.niki.berrybear.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.example.niki.berrybear.MainActivity.ifConnectionExist;
+
 
 public class HomeActivity extends Activity {
 
@@ -22,6 +24,7 @@ public class HomeActivity extends Activity {
     @Override
     public void onBackPressed() {
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +133,7 @@ public class HomeActivity extends Activity {
                     e.printStackTrace();
                 }
 
+                ifConnectionExist(getBaseContext());
                 new POST().execute(URLS.getRobotURl(), json.toString());
             }
 
@@ -146,6 +150,7 @@ public class HomeActivity extends Activity {
             e.printStackTrace();
         }
 
+        ifConnectionExist(getBaseContext());
         new POST().execute(URLS.getRobotURl(), json.toString());
     }
 
@@ -158,6 +163,10 @@ public class HomeActivity extends Activity {
             e.printStackTrace();
         }
 
+        ifConnectionExist(getBaseContext());
         new POST().execute(URLS.getRobotURl(), json.toString());
     }
+
+
+
 }

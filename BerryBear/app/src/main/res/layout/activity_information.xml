@@ -41,9 +41,9 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_weight="1"
-            android:background="@drawable/red_round_button"
             android:text="@string/edit"
-            android:textColor="#FFFFFF" />
+            android:background="@android:color/transparent"
+            android:textColor="#FC4040" />
     </RelativeLayout>
 
 

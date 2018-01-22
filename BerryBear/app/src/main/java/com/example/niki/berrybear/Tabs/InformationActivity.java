@@ -1,10 +1,10 @@
 package com.example.niki.berrybear.Tabs;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
@@ -14,27 +14,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.niki.berrybear.HttpRequests.URLS;
+import com.example.niki.berrybear.MainActivity;
 import com.example.niki.berrybear.R;
 
 import java.util.Objects;
 
 public class InformationActivity extends Activity {
-    private SharedPreferences prefs;
 
-    protected void onPause() {
-        super.onPause();
-        SharedPreferences.Editor editPrefs = prefs.edit();
-        editPrefs.putString("ip", URLS.getIP());
-        editPrefs.commit();
-
+    public void onBackPressed(){
+        Intent intent = new Intent(getBaseContext(),MainActivity.class);
+        startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information);
-        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        URLS.setIP(prefs.getString("ip", "192..."));
+
 
         final LinearLayout ipLayout = (LinearLayout) findViewById(R.id.ipLayout);
         final TextView IP = new TextView(this);
@@ -59,14 +55,14 @@ public class InformationActivity extends Activity {
                     ipLayout.removeView(IP);
                     ipLayout.addView(editIP);
                     button.setText("Save");
-                    button.setBackgroundResource(R.drawable.green_round_button);
+                    button.setTextColor(Color.parseColor("#4FBF40"));
                 }else {
 
                     IP.setText(editIP.getText());
                     ipLayout.removeView(editIP);
                     ipLayout.addView(IP);
                     button.setText("Edit");
-                    button.setBackgroundResource(R.drawable.red_round_button);
+                    button.setTextColor(Color.parseColor("#FC4040"));
                     URLS.setIP(String.valueOf(editIP.getText()));
                 }
             }

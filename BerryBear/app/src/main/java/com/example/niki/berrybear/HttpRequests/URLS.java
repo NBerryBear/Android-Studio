@@ -8,6 +8,11 @@ public class URLS {
         return "http://" + ip + "/programs/";
     }
 
+    public static String getURL(){
+        return "http://" + ip;
+    }
+
+
     public static String getRobotURl(){
         return "http://" + ip + "/robots/1";
     }

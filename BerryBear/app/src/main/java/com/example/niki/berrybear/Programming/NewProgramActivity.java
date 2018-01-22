@@ -39,6 +39,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.niki.berrybear.MainActivity.ifConnectionExist;
 import static com.example.niki.berrybear.Views.NewProgramViews.getDirectionButton;
 import static com.example.niki.berrybear.Views.NewProgramViews.getLightButton;
 import static com.example.niki.berrybear.Views.NewProgramViews.getMovingView;
@@ -342,12 +343,14 @@ public class NewProgramActivity extends ActionBarActivity {
             String name = getIntent().getStringExtra("name");
             if(name.length() > 0){
                 int id = ProgramActivity.id;
+                ifConnectionExist(getBaseContext());
                 new PUT().execute(URLS.getIdURl(id), json.toString());
                 intent = new Intent(getBaseContext(), ProgramActivity.class);
                 intent.putExtra("name", ProgramName);
                 intent.putExtra("id", id);
             }else{
                 MainActivity.openTab2 = true;
+                ifConnectionExist(getBaseContext());
                 new POST().execute(URLS.getProgramURl(), json.toString());
                 intent = new Intent(getBaseContext(),MainActivity.class);
             }

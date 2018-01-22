@@ -23,6 +23,8 @@ import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
+import static com.example.niki.berrybear.MainActivity.ifConnectionExist;
+
 public class ProgramActivity extends ActionBarActivity {
 
     static String name;
@@ -43,6 +45,7 @@ public class ProgramActivity extends ActionBarActivity {
     }
 
     public void onRunClickListener(MenuItem item) {
+        ifConnectionExist(getBaseContext());
         new POST().execute(URLS.getIdURl(id), "");
 
     }
@@ -54,6 +57,7 @@ public class ProgramActivity extends ActionBarActivity {
     }
 
     public void onDeleteClickListener(MenuItem item) {
+        ifConnectionExist(getBaseContext());
         new DELETE().execute(URLS.getIdURl(id), "");
         MainActivity.openTab2 = true;
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
@@ -77,6 +81,7 @@ public class ProgramActivity extends ActionBarActivity {
         String program = "";
         String uri = URLS.getIdURl(id);
         try {
+            ifConnectionExist(getBaseContext());
             program = new GET().execute(uri).get();
             program = program.replace("\"", "'");
             JSONArray json = new JSONArray((new JSONObject(program)).get("commands").toString());

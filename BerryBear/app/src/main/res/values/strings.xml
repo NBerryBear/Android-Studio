@@ -10,4 +10,5 @@
     <string name="information">\n
         Information… \n
     </string>
+    <string name="serverError">SERVER ERROR \n\n Tab to reload…</string>
 </resources>
