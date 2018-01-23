@@ -70,7 +70,7 @@ public class NewProgramActivity extends ActionBarActivity {
 
         addElements();
 
-        if(name.length() > 3){
+        if(name.length() > 0){
             LinearLayout list = ProgramActivity.list;
             for(int i =0; i < list.getChildCount(); i = 0){
                 View view = list.getChildAt(i);
@@ -152,41 +152,47 @@ public class NewProgramActivity extends ActionBarActivity {
                         if(oldParent != area1) oldParent.removeView(view);
 
                     }else {
-                        View view = (View) event.getLocalState();
-                        LinearLayout oldParent = (LinearLayout) view.getParent();
-                        oldParent.removeAllViews();
+                        try {
+                            View view = (View) event.getLocalState();
+                            LinearLayout oldParent = (LinearLayout) view.getParent();
 
-                        View viewToAdd = null;
+                            if(oldParent != area1) throw new NullPointerException();
+                            oldParent.removeAllViews();
+                            View viewToAdd = null;
+                            view.setLongClickable(false);
+                            view.setClickable(false);
 
-                        if(view instanceof ImageView){
-                            if ((Integer)((ImageView) view).getTag() == R.mipmap.ic_light_on ||
-                                    (Integer)((ImageView) view).getTag() == R.mipmap.ic_light_off) {
-                                viewToAdd = getLightButton(view);
-                            }else viewToAdd = getDirectionButton(view, "");
-                        }else if((view instanceof Button)) {
-                            if (((Button) view).getText() == "Moving") {
-                                viewToAdd = getMovingView(view, -1);
-                                viewToAdd.setOnLongClickListener(myOnLongClickListener);
-                            }else if (((Button) view).getText() == "Wait") {
-                                viewToAdd = getWaitView(view, "");
-                                viewToAdd.setOnLongClickListener(myOnLongClickListener);
-                            }else if (((Button) view).getText() == "Stop"){
-                                viewToAdd = getView(view);
+                            if (view instanceof ImageView) {
+                                if ((Integer) ((ImageView) view).getTag() == R.mipmap.ic_light_on ||
+                                        (Integer) ((ImageView) view).getTag() == R.mipmap.ic_light_off) {
+                                    viewToAdd = getLightButton(view);
+                                } else viewToAdd = getDirectionButton(view, "");
+                            } else if ((view instanceof Button)) {
+                                if (((Button) view).getText() == "Moving") {
+                                    viewToAdd = getMovingView(view, -1);
+                                } else if (((Button) view).getText() == "Wait") {
+                                    viewToAdd = getWaitView(view, "");
+
+                                } else if (((Button) view).getText() == "Stop") {
+                                    viewToAdd = getView(view);
+                                }
                             }
+
+                            viewToAdd.setOnLongClickListener(myOnLongClickListener);
+                            area2.addView(viewToAdd);
+
+                            scroll.post(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    scroll.fullScroll(ScrollView.FOCUS_DOWN);
+                                }
+                            });
+
+                            addElements();
+                        }catch (NullPointerException e){
+                            e.printStackTrace();
                         }
-
-                        area2.addView(viewToAdd);
-
-                        scroll.post(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                scroll.fullScroll(ScrollView.FOCUS_DOWN);
-                            }
-                        });
-
-
-                        addElements();
                     }
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
@@ -250,71 +256,72 @@ public class NewProgramActivity extends ActionBarActivity {
 
     public void onSaveClickListener(MenuItem item) {
         int itemsCount = area2.getChildCount();
-        Log.e("Items", String.valueOf(itemsCount));
-        List<JSONObject> commands = new ArrayList<>();
-        try {
-            for (int i = 0; i < itemsCount; i++) {
-                JSONObject json = new JSONObject();
-                View view = area2.getChildAt(i);
-                if(view instanceof ImageView) {
-                    if ((Integer)((ImageView) view).getTag() == R.mipmap.ic_light_on) {
-                        json.put("name" , "light");
-                        json.put("settings" , true);
-                    }else if ((Integer)((ImageView) view).getTag() == R.mipmap.ic_light_off) {
-                        json.put("name", "light");
-                        json.put("settings", false);
-                    }
-                }else if(view instanceof LinearLayout){
-                    View command =((LinearLayout) view).getChildAt(0);
-                    if(command instanceof ImageView){
-                       if((Integer)((ImageView) command).getTag() == R.mipmap.ic_up){
-                           json.put("name", "up");
-                       } else if((Integer)((ImageView) command).getTag() == R.mipmap.ic_down){
-                           json.put("name", "down");
-                       }else if((Integer)((ImageView) command).getTag() == R.mipmap.ic_right){
-                           json.put("name", "right");
-                       }else if((Integer)((ImageView) command).getTag() == R.mipmap.ic_left){
-                           json.put("name", "left");
-                       }
-                        json.put("settings", getSeconds(view));
-
-                    }else if(command instanceof Button){
-                        if(((Button) command).getText() == "Moving") {
-                            json.put("name", "moving");
-                            View spinner = ((LinearLayout) view).getChildAt(1);
-                            Integer number = ((Spinner)spinner).getSelectedItemPosition();
-                            String direction = null;
-                            if(number == 0) {
-                                direction = "up";
-                            }else if(number == 1) {
-                                direction = "down";
-                            }else if(number == 2) {
-                                direction = "left";
-                            }else if(number == 3) {
-                                direction = "right";
+        String name = (((EditText) findViewById(R.id.title)).getText().toString());
+        if(itemsCount > 0 && name.length() > 0) {
+            List<JSONObject> commands = new ArrayList<>();
+            try {
+                for (int i = 0; i < itemsCount; i++) {
+                    JSONObject json = new JSONObject();
+                    View view = area2.getChildAt(i);
+                    if (view instanceof ImageView) {
+                        if ((Integer) ((ImageView) view).getTag() == R.mipmap.ic_light_on) {
+                            json.put("name", "light");
+                            json.put("settings", true);
+                        } else if ((Integer) ((ImageView) view).getTag() == R.mipmap.ic_light_off) {
+                            json.put("name", "light");
+                            json.put("settings", false);
+                        }
+                    } else if (view instanceof LinearLayout) {
+                        View command = ((LinearLayout) view).getChildAt(0);
+                        if (command instanceof ImageView) {
+                            if ((Integer) ((ImageView) command).getTag() == R.mipmap.ic_up) {
+                                json.put("name", "up");
+                            } else if ((Integer) ((ImageView) command).getTag() == R.mipmap.ic_down) {
+                                json.put("name", "down");
+                            } else if ((Integer) ((ImageView) command).getTag() == R.mipmap.ic_right) {
+                                json.put("name", "right");
+                            } else if ((Integer) ((ImageView) command).getTag() == R.mipmap.ic_left) {
+                                json.put("name", "left");
                             }
-                            json.put("settings" , direction);
-
-                        }else if(((Button) command).getText() == "Wait") {
-                            json.put("name", "wait");
                             json.put("settings", getSeconds(view));
+
+                        } else if (command instanceof Button) {
+                            if (((Button) command).getText() == "Moving") {
+                                json.put("name", "moving");
+                                View spinner = ((LinearLayout) view).getChildAt(1);
+                                Integer number = ((Spinner) spinner).getSelectedItemPosition();
+                                String direction = null;
+                                if (number == 0) {
+                                    direction = "up";
+                                } else if (number == 1) {
+                                    direction = "down";
+                                } else if (number == 2) {
+                                    direction = "left";
+                                } else if (number == 3) {
+                                    direction = "right";
+                                }
+                                json.put("settings", direction);
+
+                            } else if (((Button) command).getText() == "Wait") {
+                                json.put("name", "wait");
+                                json.put("settings", getSeconds(view));
+                            }
+                        }
+                    } else if (view instanceof Button) {
+                        if (((Button) view).getText() == "Stop") {
+                            json.put("name", "stop");
+                            json.put("settings", true);
                         }
                     }
-                }else if(view instanceof Button){
-                    if(((Button) view).getText() == "Stop") {
-                        json.put("name", "stop");
-                        json.put("settings", true);
-                    }
+                    commands.add(json);
+
+
                 }
-                commands.add(json);
-
-
+                sendJSON(name, commands);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            String name = (((EditText) findViewById(R.id.title)).getText().toString());
-            sendJSON(name, commands);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        }else Toast.makeText(getApplicationContext(), "Fill all " , Toast.LENGTH_SHORT).show();
     }
 
     private int getSeconds(View view) {
@@ -330,7 +337,7 @@ public class NewProgramActivity extends ActionBarActivity {
 
     void sendJSON(String ProgramName, List<JSONObject> commands){
         JSONObject json = new JSONObject();
-        if (ProgramName.length() != 0 && commands.size() != 0) {
+
             try {
                 json.put("name", ProgramName);
                 json.put("commands", commands);
@@ -356,8 +363,6 @@ public class NewProgramActivity extends ActionBarActivity {
             }
 
             startActivity(intent);
-
-        }else  Toast.makeText(getApplicationContext(), "Fill all " , Toast.LENGTH_SHORT).show();
     }
 
     public void onBackPressed(){

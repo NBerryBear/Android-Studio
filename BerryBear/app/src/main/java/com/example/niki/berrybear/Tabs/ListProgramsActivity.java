@@ -59,6 +59,7 @@ public class ListProgramsActivity extends Activity {
                 "Program 5", "Program 6", "Program 7", "Program 8",
                 "Program 9", "Program 10", "Program 11", "Program 12",
                 "Program 13", "Program 14"};*/
+        //String[] names = {};
         ListView list = (ListView) findViewById(R.id.list);
             list.setAdapter(new ArrayAdapter<String>(
                 this, R.layout.list_design,

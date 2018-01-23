@@ -28,8 +28,6 @@ public class NewProgramViews {
         EditText text = new EditText(thiss);
         text.setHint("1s");
         if(time != "") text.setText(time);
-        view.setLongClickable(false);
-        view.setClickable(false);
         view.setPadding(30, 0, 0, 0);
         layout.addView(view);
         layout.addView(text);
@@ -46,8 +44,6 @@ public class NewProgramViews {
         if(position > -1){
             spinner.setSelection(position);
         }
-        view.setLongClickable(false);
-        view.setClickable(false);
         layout.addView(view);
         layout.addView(spinner);
         layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -60,8 +56,6 @@ public class NewProgramViews {
         EditText text = new EditText(thiss);
         text.setHint("1s");
         if(time != "") text.setText(time);
-        view.setLongClickable(false);
-        view.setClickable(false);
         layout.addView(view);
         layout.addView(text);
         layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));

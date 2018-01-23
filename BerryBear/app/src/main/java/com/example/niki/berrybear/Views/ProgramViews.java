@@ -1,6 +1,7 @@
 package com.example.niki.berrybear.Views;
 
 import android.graphics.Color;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -33,7 +34,7 @@ public class ProgramViews {
             image.setImageResource(picture);
             image.setTag(picture);
             image.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            image.setPadding(30, 5, 30, 5);
+            image.setPadding(30, 5, 5, 5);
             return image;
         }
         return null;
@@ -48,6 +49,8 @@ public class ProgramViews {
         LinearLayout layout = new LinearLayout(thiss);
         layout.addView(image);
         layout.addView(seconds);
+        layout.setGravity(Gravity.CENTER);
+        layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         return  layout;
 
     }
@@ -104,9 +107,12 @@ public class ProgramViews {
         button1.setText("Wait");
         button1.setBackgroundResource(R.drawable.yellow_round_button);
         button1.setTextColor(Color.rgb(225, 225, 225));
-        layout.addView(button1);
+
         TextView seconds = new TextView(thiss);
         seconds.setText(time);
+        seconds.setPadding(10, 5, 5, 5);
+
+        layout.addView(button1);
         layout.addView(seconds);
 
         return layout;
