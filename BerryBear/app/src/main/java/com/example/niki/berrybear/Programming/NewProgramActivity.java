@@ -324,13 +324,15 @@ public class NewProgramActivity extends ActionBarActivity {
         }else Toast.makeText(getApplicationContext(), "Fill all " , Toast.LENGTH_SHORT).show();
     }
 
-    private int getSeconds(View view) {
+    private Double getSeconds(View view) {
         View editText = ((LinearLayout) view).getChildAt(1);
         String text = ((EditText) editText).getText().toString();
-        Integer seconds = null;
+        text = text.replace(",", ".");
+        text = text.replaceAll("[^\\d.]", "");
+        Double seconds = null;
         if(text.length() == 0) {
-            seconds = 1;
-        } else seconds = Integer.valueOf(text);
+            seconds = 1.0;
+        } else seconds = Double.valueOf(text);
 
         return seconds;
     }
