@@ -11,7 +11,6 @@ import android.support.annotation.RequiresApi;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
-import android.widget.TextView;
 
 import com.example.niki.berrybear.HttpRequests.GET;
 import com.example.niki.berrybear.HttpRequests.URLS;
@@ -36,8 +35,8 @@ public class MainActivity extends TabActivity {
         SharedPreferences.Editor editPrefs = prefs.edit();
         editPrefs.putString("ip", URLS.getIP());
         editPrefs.commit();
-
     }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +55,6 @@ public class MainActivity extends TabActivity {
         tab2.setIndicator("Programs");
 
 
-        TextView error = (TextView) findViewById(R.id.serverError);
-
         if(connectionAvailable()){
             tab1.setContent(new Intent(this, HomeActivity.class));
             tab2.setContent(new Intent(this, ListProgramsActivity.class));
@@ -69,7 +66,7 @@ public class MainActivity extends TabActivity {
 
 
         ImageView image = new ImageView(this);
-        image.setImageResource(R.mipmap.ic_info);
+        image.setImageResource(R.mipmap.ic_setting);
         image.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         tab3.setIndicator(image);
         tab3.setContent(new Intent(this, InformationActivity.class));

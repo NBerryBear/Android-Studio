@@ -9,12 +9,11 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Berry Bear"
+        android:text="@string/berry_bear"
         android:textColor="#000000"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:gravity="center"/>
 
     <TextView

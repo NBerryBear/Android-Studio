@@ -1,5 +1,7 @@
 package com.example.niki.berrybear.Views;
 
+import android.graphics.Color;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -27,6 +29,8 @@ public class NewProgramViews {
         LinearLayout layout = new LinearLayout(thiss);
         EditText text = new EditText(thiss);
         text.setHint("1s");
+        text.setHintTextColor(Color.rgb(128, 128, 128));
+        text.setGravity(Gravity.CENTER);
         if(time != "") text.setText(time);
         view.setPadding(30, 0, 0, 0);
         layout.addView(view);

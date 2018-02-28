@@ -321,7 +321,7 @@ public class NewProgramActivity extends ActionBarActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }else Toast.makeText(getApplicationContext(), "Fill all " , Toast.LENGTH_SHORT).show();
+        }else Toast.makeText(getApplicationContext(), "You should fill all the fields." , Toast.LENGTH_SHORT).show();
     }
 
     private Double getSeconds(View view) {

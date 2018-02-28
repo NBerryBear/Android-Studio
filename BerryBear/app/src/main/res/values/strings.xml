@@ -8,7 +8,7 @@
     <string name="save">Save</string>
     <string name="add">Add</string>
     <string name="information">\n
-        \u0020\u0020Berry Bear е играчка управеляване с мобилно приложение. \n
+        \u0020\u0020Berry Bear е играчка управелявана с мобилно приложение. \n
         \u0020\u0020Притежава следните характеристики: \n
          \u0020\u0020 \u0020\u0020-Home page - за контролиране на мечето\n
          \u0020\u0020 \u0020\u0020-Program - за създаване на програми с команди\n
@@ -18,4 +18,5 @@
 
     </string>
     <string name="serverError">SERVER ERROR \n\n Tab to reload…</string>
+    <string name="berry_bear">Berry Bear</string>
 </resources>

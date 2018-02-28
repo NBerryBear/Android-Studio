@@ -30,15 +30,13 @@ public class InformationActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information);
-
-
+        
         final LinearLayout ipLayout = (LinearLayout) findViewById(R.id.ipLayout);
         final TextView IP = new TextView(this);
         IP.setTextSize(20);
         final EditText editIP = new EditText(this);
         editIP.setHint("IP...");
         editIP.setTextSize(20);
-
 
         IP.setText(URLS.getIP());
         ipLayout.addView(IP);
@@ -56,6 +54,7 @@ public class InformationActivity extends Activity {
                     ipLayout.addView(editIP);
                     button.setText("Save");
                     button.setTextColor(Color.parseColor("#4FBF40"));
+
                 }else {
 
                     IP.setText(editIP.getText());
@@ -64,9 +63,11 @@ public class InformationActivity extends Activity {
                     button.setText("Edit");
                     button.setTextColor(Color.parseColor("#FC4040"));
                     URLS.setIP(String.valueOf(editIP.getText()));
+
                 }
             }
 
         });
+
     }
 }
