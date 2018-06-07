@@ -8,16 +8,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
 
 import com.example.niki.berrybear.HttpRequests.GET;
+import com.example.niki.berrybear.HttpRequests.POST;
 import com.example.niki.berrybear.HttpRequests.URLS;
 import com.example.niki.berrybear.Tabs.HomeActivity;
 import com.example.niki.berrybear.Tabs.InformationActivity;
 import com.example.niki.berrybear.Tabs.ListProgramsActivity;
 import com.example.niki.berrybear.Tabs.ServerErrorActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
@@ -30,11 +35,29 @@ public class MainActivity extends TabActivity {
     private SharedPreferences prefs;
 
 
+    protected void onDestroy(){
+        Log.e("Status" , "Destroy");
+        JSONObject json = new JSONObject();
+        try {
+            json.put("name" , "destroy");
+            json.put("settings" , true);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        new POST().execute(URLS.getRobotURl(), json.toString());
+
+
+
+
+    }
     protected void onPause() {
         super.onPause();
+        Log.e("Status" , "Closed");
         SharedPreferences.Editor editPrefs = prefs.edit();
         editPrefs.putString("ip", URLS.getIP());
         editPrefs.commit();
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
